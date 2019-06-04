@@ -113,7 +113,7 @@ const subirStack = createStackNavigator({
 });
 
 subirStack.navigationOptions = {
-  tabBarLabel: 'Links',
+  tabBarLabel: 'Upload',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
