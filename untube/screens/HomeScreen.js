@@ -1,8 +1,8 @@
 import React from 'react';
-import List from '../components/List'
-import Header from '../components/Header'
-import SideMenu from 'react-native-side-menu'
-import Menu from '../components/Menu'
+import List from '../components/List';
+import Header from '../components/Header';
+import SideMenu from 'react-native-side-menu';
+import Menu from '../components/Menu';
 
 import {
   StyleSheet,
