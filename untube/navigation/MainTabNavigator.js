@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
+import Search from '../components/Search';
 // import ReproductionScreen from '../screens/ReproductionScreen';
 // import ListScreen from '../screens/ListScreen';
 
@@ -21,8 +22,8 @@ HomeStack.navigationOptions = {
       focused={focused}
       name={
         Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+          ? `ios-home${focused ? '' : '-outline'}`
+          : 'md-home'
       }
     />
   ),
@@ -90,10 +91,28 @@ SettingsStack.navigationOptions = {
   ),
 };
 
+
+const SearchStack = createStackNavigator({
+  Searchs: Search,
+});
+
+SearchStack.navigationOptions = {
+  tabBarLabel: 'Search',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-search' : 'md-search'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
-  LinksStack,
+  SearchStack,
   SettingsStack,
+  LinksStack,
+  
+
   // VideosStack,
   // ListStack,
 });

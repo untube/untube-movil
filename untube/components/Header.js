@@ -3,10 +3,12 @@ import {
     Text,
     View,
     StyleSheet,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    Dimensions
 } from 'react-native'
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
+const {width, heght} = Dimensions.get('window')
 const Header = props => (
     <View style={styles.container}>
         <TouchableWithoutFeedback onPress={() => props.toggle()}>
@@ -21,6 +23,7 @@ const Header = props => (
 
 const styles =StyleSheet.create( {
     container: {
+        width: width,
         flexDirection: 'row',
         height: 60,
         alignItems: 'center',
