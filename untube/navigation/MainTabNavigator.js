@@ -10,6 +10,8 @@ import Search from '../components/Search';
 // import ReproductionScreen from '../screens/ReproductionScreen';
 // import ListScreen from '../screens/ListScreen';
 
+import subir from '../screens/subir';
+
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -106,11 +108,27 @@ SearchStack.navigationOptions = {
   ),
 };
 
+const subirStack = createStackNavigator({
+  Subirs: subir,
+});
+
+subirStack.navigationOptions = {
+  tabBarLabel: 'Links',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+    />
+  ),
+};
+
+
 export default createBottomTabNavigator({
   HomeStack,
   SearchStack,
   SettingsStack,
   LinksStack,
+  subirStack,
   
 
   // VideosStack,
