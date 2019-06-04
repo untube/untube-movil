@@ -16,6 +16,7 @@ const Header = props => (
             name="three-bars"
             size={35}
             color="white"
+            style={styles.icon}
             />
         </TouchableWithoutFeedback>
     </View>
@@ -28,10 +29,13 @@ const styles =StyleSheet.create( {
         height: 60,
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'black',
-        marginHorizontal: 15,
+        backgroundColor: '#3A53D0',
         paddingTop: 10,
     },
+    icon: {
+        marginHorizontal: 15,
+        marginTop:5,
+    }
 })
 
 export default Header

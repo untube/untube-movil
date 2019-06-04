@@ -133,13 +133,13 @@ export default class Search extends Component {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#181818'
+        backgroundColor: 'white'
     },
     header: {
         height: 40,
-        backgroundColor: '#181818',
+        backgroundColor: '#3A53D0',
         borderBottomWidth: 1,
-        borderColor: '#3a3a3a',
+        borderColor: '#3A53D0',
         paddingBottom: 5,
         marginTop:20,
         flexDirection: 'row',
@@ -156,18 +156,20 @@ const styles = StyleSheet.create({
     iconInputClose: {
         position: 'absolute',
         top: 5,
-        right: 90,
+        right: 45,
         backgroundColor: 'transparent',
         zIndex:1,
+        marginTop:5,
     },
     input: {
         width: width - (width / 8),
         height: 30,
-        backgroundColor: '#323232',
+        backgroundColor: '#3D74D9',
         marginHorizontal: 10,
         paddingLeft: 30,
         borderRadius: 3,
-        color: 'grey'
+        marginTop:5,
+        color: 'white'
     },
     cancelButton: {
         color: 'white',
