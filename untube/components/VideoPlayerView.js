@@ -19,7 +19,9 @@ export default class VideoPlayerView extends Component{
         return(
             <View style={styles.container}>
                 <Video
-                    source={{uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'}}
+                    // source={{uri: 'http://d23dyxeqlo5psv.cloudfront.net/big_buck_bunny.mp4'}}
+                    source={{uri: 'http://34.73.94.91:3002/watch/5cf5718feec09c0001b0f32a'}}
+                    
                     useNativeControls={true}
                     rate={1.0}
                     volume={1.0}
