@@ -7,6 +7,7 @@ import HomeScreen from '../screens/HomeScreen';
 import LinksScreen from '../screens/LinksScreen';
 import SettingsScreen from '../screens/SettingsScreen';
 import Search from '../components/Search';
+import VideoPlayerView from '../components/VideoPlayerView'
 // import ReproductionScreen from '../screens/ReproductionScreen';
 // import ListScreen from '../screens/ListScreen';
 
@@ -106,13 +107,25 @@ SearchStack.navigationOptions = {
   ),
 };
 
+const PlayerStack = createStackNavigator({
+  VideoPlayer: VideoPlayerView,
+});
+
+PlayerStack.navigationOptions = {
+  tabBarLabel: 'Player',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-play-circle' : 'md-play-circle'}
+    />
+  ),
+};
+
 export default createBottomTabNavigator({
   HomeStack,
   SearchStack,
+  PlayerStack,
   SettingsStack,
   LinksStack,
-  
 
-  // VideosStack,
-  // ListStack,
 });

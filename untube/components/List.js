@@ -81,7 +81,7 @@ export default class List extends Component {
                     {/* <Text style={styles.text}>My list.</Text> */}
                     <FlatList 
                             // horizontal
-                            ItemSeparatorComponent={() => <View style={{width:10}}></View>}
+                            ItemSeparatorComponent={() => <View style={{height:5, backgroundColor: 'white'}}></View>}
                             renderItem={({item}) =>this._renderItem(item)} 
                             data = {show_first}
                             keyExtractor={(item) => item.key}>

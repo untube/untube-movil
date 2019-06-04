@@ -7,7 +7,7 @@ import {
     Image,
     ScrollView
 } from 'react-native'
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, Feather } from '@expo/vector-icons';
 
 
 const {width, height} = Dimensions.get('window')
@@ -24,7 +24,7 @@ export default class Menu extends Component {
                             color='white'
                             size={50}
                         />
-                        <Text style = {styles.text}>Dibu</Text>
+                        <Text style = {styles.text}>User Name</Text>
                     </View>
                     <FontAwesome
                         name='exchange'
@@ -38,12 +38,12 @@ export default class Menu extends Component {
                             
                             <FontAwesome 
                             style={styles.iconWithText}
-                            name='download'
+                            name='search'
                             color='white'
                             size={28}
                             />
                             
-                            <Text style = {styles.text}>My Downloads</Text>
+                            <Text style = {styles.text}>Search Video</Text>
                         </View>
                         <FontAwesome
                                 style={styles.rifhtIcon}
@@ -56,13 +56,13 @@ export default class Menu extends Component {
 
                     <View style={styles.textWithIcon}>
                         <View style={styles.withIcon}>
-                            <Ionicons
+                            <Feather
                                 style={styles.iconWithText}
-                                name='md-checkmark'
+                                name='upload'
                                 color='white'
                                 size={25}
                             />
-                            <Text style = {styles.text}>My List</Text>
+                            <Text style = {styles.text}>UpLoad Video</Text>
                         </View>
                         <FontAwesome
                             style={styles.rightIcon}
@@ -83,14 +83,14 @@ const styles = StyleSheet.create({
         flex:1,
         width: width,
         height: height,
-        backgroundColor: '#191919',
+        backgroundColor: '#3860D8',
     },
     avatarContainer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
         width: width / 2 + 50,
-        borderColor: 'black',
+        borderColor: 'white',
         borderBottomWidth: 3,
         paddingHorizontal: 20,
         paddingVertical: 20,
@@ -120,7 +120,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         paddingVertical: 15,
-        borderColor: 'black',
+        borderColor: 'white',
         borderBottomWidth: 3
     },
     withIcon: {
