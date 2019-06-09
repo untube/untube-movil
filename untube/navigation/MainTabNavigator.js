@@ -11,6 +11,8 @@ import VideoPlayerView from '../components/VideoPlayerView'
 // import ReproductionScreen from '../screens/ReproductionScreen';
 // import ListScreen from '../screens/ListScreen';
 
+import subir from '../screens/subir';
+
 
 const HomeStack = createStackNavigator({
   Home: HomeScreen,
@@ -107,6 +109,21 @@ SearchStack.navigationOptions = {
   ),
 };
 
+const subirStack = createStackNavigator({
+  Subirs: subir,
+});
+
+subirStack.navigationOptions = {
+  tabBarLabel: 'Upload',
+  tabBarIcon: ({ focused }) => (
+    <TabBarIcon
+      focused={focused}
+      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+    />
+  ),
+};
+
+
 const PlayerStack = createStackNavigator({
   VideoPlayer: VideoPlayerView,
 });
@@ -127,5 +144,7 @@ export default createBottomTabNavigator({
   PlayerStack,
   SettingsStack,
   LinksStack,
+  subirStack,
+  
 
 });
