@@ -9,23 +9,76 @@ import {
 import { Video } from 'expo'
 import List from '../components/List';
 import { FontAwesome,} from '@expo/vector-icons';
+import Header from '../components/Header';
+import SideMenu from 'react-native-side-menu';
+import Menu from '../components/Menu';
 
 import gql from 'graphql-tag';
 import { AppRegistry } from 'react-native';
 import ApolloClient from 'apollo-client';
 import { HttpLink, InMemoryCache } from 'apollo-client-preset';
 import { ApolloProvider, graphql } from 'react-apollo';
+import { Query } from "react-apollo";
 
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185:5000/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+
+
+
+const videosQuery = gql`
+    query{
+    videoById(id: "jsjsjsjs"){
+      id
+      user_id
+      category_id
+      video_id
+      title
+      description
+      originalname
+      views
+      filename
+      image
+    }
+  }
+`;
+
+
+
+
+// const RecommendComponent = ({ code }) => (
+//   <Query query={recommendQuery} variables={{ code: code }}>
+//     {({ loading, error, data }) => {
+//     //   const { recommendationsByUser } = data;
+//       if (loading) return null;
+//       if (error) return `Error! ${error}`;
+
+//       if (recommendationsByUser) {
+//         return (<View>
+//             {/* recommendationsByUser.ids */}
+//             <Text>hola}</Text>
+//             </View>);
+//       };
+      
+//     //   return (<Text>Loading...</Text>);
+//     }}
+//   </Query>
+// );
 
 const recommendQuery = gql`
-    query{
-        recommendationsByUser(code:0){
+    query RecommendationsByUser($code: Int!) {
+        recommendationsByUser(code: $code){
             ids
         }
     }
 `;
 
-const RecommendComponent = graphql(recommendQuery)(props => {
+const RecommendComponent = graphql(recommendQuery,  {
+    options: (props) => ({ variables: { code: props.code } })
+    })(props => {
     const { error, recommendationsByUser } = props.data;
     console.log(props.data);
     if (error) {
@@ -38,10 +91,7 @@ const RecommendComponent = graphql(recommendQuery)(props => {
     return <Text>Loading...</Text>;
   });
 
-  const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://34.73.94.91:5000/graphql'}),
-    cache: new InMemoryCache().restore({}),
-  });
+
   
 const comentarios = [
     {
@@ -123,11 +173,22 @@ export default class VideoPlayerView extends Component{
     constructor(props){
 		super(props)
 		this.state = {
-			comment: []
+            comment: [],
+            isOpen: false
         }
 
         
     }
+
+	toggle(){
+		this.setState({
+			isOpen: !this.state.isOpen
+		})
+	}
+
+	updateMenu(isOpen){
+		this.setState({isOpen})
+	}
 
     static navigationOptions = {
         header: null,
@@ -156,46 +217,60 @@ export default class VideoPlayerView extends Component{
 
 
     render(){
+        const elProps = this.props.navigation
+        const {params} = elProps.state
         return(
+            
             <ApolloProvider client={client}>
-                <View style={styles.container}>
-                    <View style={{alignItems: 'stretch',height:300}}>
-                        
-                        <Video
-                            source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-                            // source={{uri: 'http://34.73.94.91:3002/watch/5cf5718feec09c0001b0f32a'}}
-                            
-                            useNativeControls={true}
-                            rate={1.0}
-                            volume={1.0}
-                            isMuted={false}
-                            resizeMode={Video.RESIZE_MODE_STRETCH}
-                            shouldPlay={false}
-                            style={{width:width, height: 300}}
-                            isPortrait={true}
-                            // rotation={90}
+                <SideMenu
+					menu={<Menu navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>}
+					isOpen={this.state.isOpen}
+					onChange={(isOpen) => this.updateMenu(isOpen)}
+					>
+							<Header navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
 
-                            // tittle={this.props.title}
-                            // onBack={() => null}
-                        /> 
-                    </View>
-                    
 
-                    <View style={{flex:2}}>
-                        <List data={show_second}/>
-                        {/* <RecommendComponent/> */}
-                    </View>
+                        	<View style={styles.container}>
+                                <View style={{alignItems: 'stretch',height:300}}>
+                                    <Text>{params.item.name}</Text>
+                                    <Video
+                                        source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
+                                        // source={{uri: 'http://34.73.94.91:3002/watch/5cf5718feec09c0001b0f32a'}}
+                                        
+                                        useNativeControls={true}
+                                        rate={1.0}
+                                        volume={1.0}
+                                        isMuted={false}
+                                        resizeMode={Video.RESIZE_MODE_STRETCH}
+                                        shouldPlay={false}
+                                        style={{width:width, height: 300}}
+                                        isPortrait={true}
+                                        // rotation={90}
 
-                    <View style={styles.container}>
-                        <FlatList 
-                                // horizontal
-                                ItemSeparatorComponent={() => <View style={{height:5, backgroundColor: '#3860D8'}}></View>}
-                                renderItem={({item}) =>this._renderItem(item)} 
-                                data = {this.state.comment}
-                                keyExtractor={(item) => item.key}>
-                        </FlatList>
-                    </View>
-                </View>
+                                        // tittle={this.props.title}
+                                        // onBack={() => null}
+                                    /> 
+                                </View>
+                                
+
+                                <View style={{flex:2}}>
+                                    
+                                    {/* <List navigation={elProps} data={show_second}/> */}
+                                    <RecommendComponent code={0}/>
+                                </View>
+
+                                <View style={styles.container}>
+                                    <FlatList 
+                                            // horizontal
+                                            ItemSeparatorComponent={() => <View style={{height:5, backgroundColor: '#3860D8'}}></View>}
+                                            renderItem={({item}) =>this._renderItem(item)} 
+                                            data = {this.state.comment}
+                                            keyExtractor={(item) => item.key}>
+                                    </FlatList>
+                                </View>
+                            </View>
+				</SideMenu>
+                
             </ApolloProvider> 
 
                 

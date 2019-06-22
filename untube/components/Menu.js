@@ -5,7 +5,8 @@ import {
     View,
     Text,
     Image,
-    ScrollView
+    ScrollView,
+    TouchableWithoutFeedback,
 } from 'react-native'
 import { FontAwesome, Feather } from '@expo/vector-icons';
 
@@ -13,7 +14,9 @@ import { FontAwesome, Feather } from '@expo/vector-icons';
 const {width, height} = Dimensions.get('window')
 
 export default class Menu extends Component {
+    
     render () {
+        const navigation = this.props.navigation
         return (
             <View style={styles.menu}>
                 <View style={styles.avatarContainer}>
@@ -33,45 +36,78 @@ export default class Menu extends Component {
                     />
                 </View>
                 <ScrollView style={styles.scrollContainer}>
-                    <View style={styles.textWithIcon}>
-                        <View style={styles.withIcon}>
+                    <TouchableWithoutFeedback onPress={
+                        () => navigation.navigate('Home') } onPressOut={() => this.props.toggle()}>
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                
+                                <FontAwesome 
+                                style={styles.iconWithText}
+                                name='home'
+                                color='white'
+                                size={28}
+                                />
+                                
+                                <Text style = {styles.text}>Home</Text>
+                            </View>
+                            <FontAwesome
+                                    style={styles.rifhtIcon}
+                                    name='angle-right'
+                                    color='white'
+                                    size={25}
+                                />
                             
-                            <FontAwesome 
-                            style={styles.iconWithText}
-                            name='search'
-                            color='white'
-                            size={28}
-                            />
+                        </View>    
+                    </TouchableWithoutFeedback>
+
+
+                    <TouchableWithoutFeedback onPress={
+                        () => navigation.navigate('Search')} onPressOut={() => this.props.toggle()}>
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                
+                                <FontAwesome 
+                                style={styles.iconWithText}
+                                name='search'
+                                color='white'
+                                size={28}
+                                />
+                                
+                                <Text style = {styles.text}>Search Video</Text>
+                            </View>
+                            <FontAwesome
+                                    style={styles.rifhtIcon}
+                                    name='angle-right'
+                                    color='white'
+                                    size={25}
+                                />
                             
-                            <Text style = {styles.text}>Search Video</Text>
-                        </View>
-                        <FontAwesome
-                                style={styles.rifhtIcon}
+                        </View>    
+                    </TouchableWithoutFeedback>
+                    
+                    <TouchableWithoutFeedback onPress={
+                        () => navigation.navigate('Upload')} onPressOut={() => this.props.toggle()}>
+                    
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                <Feather
+                                    style={styles.iconWithText}
+                                    name='upload'
+                                    color='white'
+                                    size={25}
+                                />
+                                <Text style = {styles.text}>UpLoad Video</Text>
+                            </View>
+                            <FontAwesome
+                                style={styles.rightIcon}
                                 name='angle-right'
                                 color='white'
                                 size={25}
                             />
-                        
-                    </View>
-
-                    <View style={styles.textWithIcon}>
-                        <View style={styles.withIcon}>
-                            <Feather
-                                style={styles.iconWithText}
-                                name='upload'
-                                color='white'
-                                size={25}
-                            />
-                            <Text style = {styles.text}>UpLoad Video</Text>
+                            
                         </View>
-                        <FontAwesome
-                            style={styles.rightIcon}
-                            name='angle-right'
-                            color='white'
-                            size={25}
-                        />
-                        
-                    </View>
+                    </TouchableWithoutFeedback>
+                    
                 </ScrollView>
             </View>
         )

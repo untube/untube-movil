@@ -74,12 +74,12 @@ export default class HomeScreen extends React.Component {
     return (
 			<View style={[{flex:1} ,styles.container]}>
 				<SideMenu
-					menu={<Menu/>}
+					menu={<Menu navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>}
 					isOpen={this.state.isOpen}
 					onChange={(isOpen) => this.updateMenu(isOpen)}
 					>
-							<Header toggle={this.toggle.bind(this)}/>
-							<List data={show_second}/>
+							<Header navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
+							<List navigation={this.props.navigation} data={show_second}/>
 				</SideMenu>
 			</View>
 		);

@@ -4,9 +4,12 @@ import {
     View,
     StyleSheet,
     FlatList,
-    Image
+    Image,
+    TouchableWithoutFeedback
 } from 'react-native'
 import { ScrollView } from 'react-native-gesture-handler';
+
+
 
 
 export default class List extends Component {
@@ -17,16 +20,22 @@ export default class List extends Component {
 		}
 	}
     _renderItem(item){
+
+        const navigation = this.props.navigation
         return (
             // {width: 128, height: 180}
-            <View style={styles.containerImage}>
-                <Image style={styles.image} source={{uri: item.image}}/>
-                <View style={styles.containerText}>
-                    <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.name}</Text>
-                    <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
-                    
+            <TouchableWithoutFeedback onPress={
+                () => navigation.navigate('Reproduce', {item: item})}>
+                <View style={styles.containerImage}>
+                    <Image style={styles.image} source={{uri: item.image}}/>
+                    <View style={styles.containerText}>
+                        <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.name}</Text>
+                        <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
+                        
+                    </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
+            
             
         )
     }

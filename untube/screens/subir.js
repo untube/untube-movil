@@ -11,8 +11,15 @@ import {
 var uri;
 import CameraRollPicker from 'react-native-camera-roll-picker';
 
-export default class subir extends React.Component {
+import Header from '../components/Header';
+import SideMenu from 'react-native-side-menu';
+import Menu from '../components/Menu';
 
+
+export default class subir extends React.Component {
+  static navigationOptions = {
+    header: null,
+  };
   state = { animating: false }
   constructor(props) {
     super(props);
@@ -20,10 +27,22 @@ export default class subir extends React.Component {
     this.state = {
       num: 0,
       selected: [],
+      isOpen: false,
     };
 
     this.getSelectedImages = this.getSelectedImages.bind(this);
   }
+
+// Funciones para el sidebar
+  toggle(){
+		this.setState({
+			isOpen: !this.state.isOpen
+		})
+	}
+
+	updateMenu(isOpen){
+		this.setState({isOpen})
+	}
  
   getSelectedImages(images, current) {
     
@@ -69,24 +88,36 @@ export default class subir extends React.Component {
  
   render() {
     return (
-      <View style={styles.container}>
-        <View style={styles.content}>
-          <Text style={styles.text}>
-            <Text style={styles.bold}> {this.state.num} </Text> Videos has been selected
-          </Text>
-        </View>
+      <View style={{flex: 1}}>
+        <SideMenu
+					menu={<Menu navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>}
+					isOpen={this.state.isOpen}
+					onChange={(isOpen) => this.updateMenu(isOpen)}
+					>
+							<Header navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
+							
+              <View style={styles.container}>
+                <View style={styles.content}>
+                  <Text style={styles.text}>
+                    <Text style={styles.bold}> {this.state.num} </Text> Videos has been selected
+                  </Text>
+                </View>
 
-        <CameraRollPicker
-          groupTypes='All'
-          maximum={1}
-          selected={this.state.selected}
-          assetType='Videos'
-          imagesPerRow={3}
-          imageMargin={5}
-          callback={this.getSelectedImages} />
-          
-          <Button title="Upload Videos"  onPress={this.sendVideo}/>
+                <CameraRollPicker
+                  groupTypes='All'
+                  maximum={1}
+                  selected={this.state.selected}
+                  assetType='Videos'
+                  imagesPerRow={3}
+                  imageMargin={5}
+                  callback={this.getSelectedImages} />
+                  
+                  <Button title="Upload Videos"  onPress={this.sendVideo}/>
+              </View>
+
+				</SideMenu>
       </View>
+      
     );
   }
 }
