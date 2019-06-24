@@ -7,8 +7,34 @@ import Menu from '../components/Menu';
 import {
   StyleSheet,
   View,
+  Text
 } from 'react-native';
 
+
+import gql from 'graphql-tag';
+import { AppRegistry } from 'react-native';
+import ApolloClient from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloProvider, graphql } from 'react-apollo';
+import { Query } from "react-apollo";
+
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185:5000/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+const videosQuery = gql`
+query{
+	allVideos{
+	  id
+	  category_id
+	  title
+	  description
+	  image
+	}
+}
+`;
 
 const show_second = [
     {
@@ -49,6 +75,22 @@ const show_second = [
 
 
 
+const AllVideos = graphql(videosQuery)(props => {
+	const { error, allVideos } = props.data;
+
+	if (error) {
+		return <Text>error</Text>;
+	}
+	if (allVideos) {
+		return <List navigation={props.navigation} data={allVideos}/>
+	}
+
+	return <Text>Loading..</Text>
+
+});
+
+
+
 export default class HomeScreen extends React.Component {
   constructor(props){
 		super(props)
@@ -70,8 +112,18 @@ export default class HomeScreen extends React.Component {
 	static navigationOptions = {
     header: null,
   };
+
+  
 	render() {
+		const Opcion = (() => {
+			if (AllVideos instanceof Array){
+				return <List navigation={this.props.navigation} data={AllVideos}/>
+			}else{
+				return <Text>Loading..</Text>
+			}
+		})
     return (
+		<ApolloProvider client={client}>
 			<View style={[{flex:1} ,styles.container]}>
 				<SideMenu
 					menu={<Menu navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>}
@@ -79,9 +131,13 @@ export default class HomeScreen extends React.Component {
 					onChange={(isOpen) => this.updateMenu(isOpen)}
 					>
 							<Header navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
-							<List navigation={this.props.navigation} data={show_second}/>
+							
+							
+							<AllVideos navigation={this.props.navigation}></AllVideos>
 				</SideMenu>
 			</View>
+		</ApolloProvider>
+			
 		);
   }
 }
