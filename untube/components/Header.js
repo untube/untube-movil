@@ -4,11 +4,13 @@ import {
     View,
     StyleSheet,
     TouchableWithoutFeedback,
-    Dimensions
+    Dimensions, 
+    Button
 } from 'react-native'
 import { MaterialIcons, Octicons } from '@expo/vector-icons';
 
 const {width, heght} = Dimensions.get('window')
+
 const Header = props => (
     <View style={styles.container}>
         <TouchableWithoutFeedback onPress={() => props.toggle()}>
@@ -19,6 +21,9 @@ const Header = props => (
             style={styles.icon}
             />
         </TouchableWithoutFeedback>
+
+		<Button title= 'Iniciar sesión' onPress={()=>this.goToScreen('Login')}/>
+       	<Button title= 'Registrarse' onPress={()=>this.goToScreen('Signup')}/>
     </View>
 )
 
