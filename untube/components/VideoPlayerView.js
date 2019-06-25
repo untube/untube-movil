@@ -219,6 +219,8 @@ export default class VideoPlayerView extends Component{
     render(){
         const elProps = this.props.navigation
         const {params} = elProps.state
+        var uribase = 'http://35.196.3.185:3002/watch/'
+        var urivideo = uribase.concat(params.item.id)
         return(
             
             <ApolloProvider client={client}>
@@ -231,23 +233,23 @@ export default class VideoPlayerView extends Component{
 
 
                         	<View style={styles.container}>
-                                <View style={{alignItems: 'stretch',height:300}}>
-                                    <Text>{params.item.name}</Text>
+                                <View style={{alignItems: 'stretch',height:300, backgroundColor:'black'}}>
                                     <Video
-                                        source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-                                        // source={{uri: 'http://34.73.94.91:3002/watch/5cf5718feec09c0001b0f32a'}}
+                                        // source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
+                                        source={{uri: urivideo}}
                                         
                                         useNativeControls={true}
                                         rate={1.0}
                                         volume={1.0}
                                         isMuted={false}
-                                        resizeMode={Video.RESIZE_MODE_STRETCH}
-                                        shouldPlay={false}
+                                        resizeMode={Video.RESIZE_MODE_CONTAIN}
+                                        shouldPlay={true}
                                         style={{width:width, height: 300}}
-                                        isPortrait={true}
+                                        isPortrait={false}
+                                        // style={{backgroundColor: 'black'}}
                                         // rotation={90}
 
-                                        // tittle={this.props.title}
+                                        tittle={params.item.title}
                                         // onBack={() => null}
                                     /> 
                                 </View>
@@ -255,8 +257,8 @@ export default class VideoPlayerView extends Component{
 
                                 <View style={{flex:2}}>
                                     
-                                    {/* <List navigation={elProps} data={show_second}/> */}
-                                    <RecommendComponent code={0}/>
+                                    <List navigation={elProps} data={show_second}/>
+                                    {/* <RecommendComponent code={0}/> */}
                                 </View>
 
                                 <View style={styles.container}>
