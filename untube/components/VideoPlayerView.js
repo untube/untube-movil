@@ -84,7 +84,7 @@ const RecommendComponent = graphql(recommendQuery,  {
     //       const element = recommendationsByUser.ids[index];
     //       ids[index] = element
     //   }
-      return <Text>{recommendationsByUser}</Text>;
+      return <List navigation={props.elProps} data={recommendationsByUser}/>;
     }else{
         // <List navigation={props.elProps} data={show_second}/>
         <List data={show_second}/>
@@ -260,8 +260,8 @@ export default class VideoPlayerView extends Component{
                                 <View style={{flex:2}}>
                                     
                                     
-                                    {/* <RecommendComponent elProps={elProps} code={0}/> */}
-                                    <RecommendComponent code={0}/>
+                                    <RecommendComponent elProps={elProps} code={0}/>
+                                    {/* <RecommendComponent code={0}/> */}
                                 </View>
 
                                 <View style={styles.container}>
