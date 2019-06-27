@@ -28,64 +28,66 @@ const client = new ApolloClient({
 
 
 
-
 const videosQuery = gql`
-    query{
-    videoById(id: "jsjsjsjs"){
-      id
-      user_id
-      category_id
-      video_id
-      title
-      description
-      originalname
-      views
-      filename
-      image
+    query VideoById($idv: Int!){
+    videoById(id: $idv){
+        id
+        category_id
+        title
+        description
+        image
     }
   }
 `;
 
+const AllVideos = graphql(videosQuery)(props => {
+	const { error, allVideos } = props.data;
 
+	if (error) {
+		return <Text>error</Text>;
+	}
+	if (allVideos) {
+		return <List navigation={props.navigation} data={allVideos}/>
+	}
 
+	return <Text>Loading..</Text>
 
-// const RecommendComponent = ({ code }) => (
-//   <Query query={recommendQuery} variables={{ code: code }}>
-//     {({ loading, error, data }) => {
-//     //   const { recommendationsByUser } = data;
-//       if (loading) return null;
-//       if (error) return `Error! ${error}`;
+});
 
-//       if (recommendationsByUser) {
-//         return (<View>
-//             {/* recommendationsByUser.ids */}
-//             <Text>hola}</Text>
-//             </View>);
-//       };
-      
-//     //   return (<Text>Loading...</Text>);
-//     }}
-//   </Query>
-// );
 
 const recommendQuery = gql`
     query RecommendationsByUser($code: Int!) {
         recommendationsByUser(code: $code){
-            ids
+            id
+            title
+            description
+            category_id
+            image
         }
     }
 `;
 
+
+  
 const RecommendComponent = graphql(recommendQuery,  {
     options: (props) => ({ variables: { code: props.code } })
     })(props => {
     const { error, recommendationsByUser } = props.data;
-    console.log(props.data);
+    console.log("el props");
+    console.log(props);
     if (error) {
       return <Text>{error}</Text>;
     }
     if (recommendationsByUser) {
-      return <Text>{recommendationsByUser.ids}</Text>;
+    //     var ids = []
+    //   for (let index = 0; index < recommendationsByUser.ids.length; index++) {
+    //       const element = recommendationsByUser.ids[index];
+    //       ids[index] = element
+    //   }
+      return <List navigation={props.elProps} data={recommendationsByUser}/>;
+    }else{
+        // <List navigation={props.elProps} data={show_second}/>
+        <List data={show_second}/>
     }
     
     return <Text>Loading...</Text>;
@@ -257,7 +259,8 @@ export default class VideoPlayerView extends Component{
 
                                 <View style={{flex:2}}>
                                     
-                                    <List navigation={elProps} data={show_second}/>
+                                    
+                                    <RecommendComponent elProps={elProps} code={0}/>
                                     {/* <RecommendComponent code={0}/> */}
                                 </View>
 

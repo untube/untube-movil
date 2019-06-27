@@ -24,18 +24,6 @@ const client = new ApolloClient({
     cache: new InMemoryCache().restore({}),
   });
 
-const videosQuery = gql`
-query{
-	allVideos{
-	  id
-	  category_id
-	  title
-	  description
-	  image
-	}
-}
-`;
-
 const show_second = [
     {
         key: '5',
@@ -73,7 +61,17 @@ const show_second = [
     },
 ]
 
-
+const videosQuery = gql`
+query{
+	allVideos{
+	  id
+	  category_id
+	  title
+	  description
+	  image
+	}
+}
+`;
 
 const AllVideos = graphql(videosQuery)(props => {
 	const { error, allVideos } = props.data;
