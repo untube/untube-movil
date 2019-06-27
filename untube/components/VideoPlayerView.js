@@ -22,7 +22,7 @@ import { Query } from "react-apollo";
 
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://35.196.3.185:5000/graphql'}),
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
     cache: new InMemoryCache().restore({}),
   });
 
