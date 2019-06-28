@@ -20,21 +20,9 @@ import { Query } from "react-apollo";
 
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://35.196.3.185:5000/graphql'}),
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
     cache: new InMemoryCache().restore({}),
   });
-
-const videosQuery = gql`
-query{
-	allVideos{
-	  id
-	  category_id
-	  title
-	  description
-	  image
-	}
-}
-`;
 
 const show_second = [
     {
@@ -73,7 +61,17 @@ const show_second = [
     },
 ]
 
-
+const videosQuery = gql`
+query{
+	allVideos{
+	  id
+	  category_id
+	  title
+	  description
+	  image
+	}
+}
+`;
 
 const AllVideos = graphql(videosQuery)(props => {
 	const { error, allVideos } = props.data;
