@@ -22,8 +22,8 @@ const Header = props => (
             />
         </TouchableWithoutFeedback>
 
-		<Button title= 'Iniciar sesión' onPress={()=>this.goToScreen('Login')}/>
-       	<Button title= 'Registrarse' onPress={()=>this.goToScreen('Signup')}/>
+		<Button title= 'Iniciar sesión' onPress={() => props.navigation.navigate('Login')}/>
+       	<Button title= 'Registrarse' onPress={() => props.navigation.navigate('Singup')}/>
     </View>
 )
 
