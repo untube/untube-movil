@@ -16,23 +16,6 @@ import { Mutation } from 'react-apollo'
 
 
 
-class userInput{
-    constructor(user){
-        this.name = user.name
-        this.nickname = user.nickname
-        this.email = user.email
-        this.password = user.password
-        this.password_confirmation = user.password_confirmation    
-    }
-}
-
-class sessionInput {
-
-    constructor(user){
-        this.email = user.email
-        this.password = user.password
-    }
-}
 const client = new ApolloClient({
     link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
     cache: new InMemoryCache().restore({}),
@@ -40,7 +23,8 @@ const client = new ApolloClient({
 
   
 const signupMutation =gql `
-mutation createUserMutation($name: String!, $nickname: String!, $email: String!, $password: String!, $password_confirmation: String!){
+mutation createUserMutation($name: String!, $nickname: String!, $email: String!, $password: String!, 
+    $password_confirmation: String!){
     createUser(user:{
         name: $name,
         nickname: $nickname,
@@ -56,60 +40,17 @@ mutation createUserMutation($name: String!, $nickname: String!, $email: String!,
 `
 
 const signinMutation =gql `
-mutation createSessionMutation($email: String!, $password: String!) {
+mutation createSessionMutation($email: String!, $password: String!){
     createSession(session:{
-        email: $email,
-        password: $password,
-    }){
-        token
-        id
-        nickname
+    email: $email
+    password: $password
+  }){
+    token
+    id
+    nickname
   }
 }
 `
-
-// const UserSingup = graphql(signupQuery,  {
-//     options: (props) => ({ variables: { user: props.user } })
-//     })(props => {
-//     const { error, UserSingup } = props.data;
-//     console.log("el props");
-//     console.log(props);
-//     if (error) {
-//       console.log("error en el graphql")
-//     }
-//     if (UserSingup) {
-//     //     var ids = []
-//     //   for (let index = 0; index < recommendationsByUser.ids.length; index++) {
-//     //       const element = recommendationsByUser.ids[index];
-//     //       ids[index] = element
-//     //   }
-        
-//         return UserSingup
-//     }else{
-//         // <List navigation={props.elProps} data={show_second}/>
-//         console.log("NOOOOOOOO funciona")
-//         return <Text>No Funciona</Text>;
-//     }
-    
-//     return <Text>Loading...</Text>;
-//   });
-
-
-
-//   this.state = {
-//     signup:{
-//         name: '',
-//         nickname: '',
-//         email: '',
-//         password: '',
-//         password_confirmation:'',
-//     },
-//     signin:{
-//         email: '',
-//         password: '',
-//     }
-    
-// }
 
 export default class Form extends React.Component {
     constructor(props){
@@ -125,46 +66,10 @@ export default class Form extends React.Component {
     }
     onChangeText = (key,  val) => {
         this.setState({ [key]: val })
-        // console.log(this.state)
       }
 
-    //   onChangeText = (key, key2, val) => {
-    //     let temp = this.state[key]
-    //     temp[key2] = val
-    //     this.setState({ [key]: temp })
-    //     console.log(this.state)
-    //   }
-    signup(){
-        if(this.state.password != this.state.password_confirmation){
-            Alert.alert(
-                'Alert Title',
-                'password does not match',
-                [
-                  {text: 'OK', onPress: () => console.log('OK Pressed')},
-                ],
-                {cancelable: false},
-              );
-        }else{
-            console.log("funciona?")
-            // console.log(this.state)
-
-            
-            // resultado = UserSingup( user={this.state})
-            resultado = true
-            
-            return resultado
-        }
-
-    }
-
-
-    login(){
-
-    }
-    
+      
     render(){
-        // let signupInfo = new userInput(this.state.signup)
-        // let signinInfo = new sessionInput(this.state.signin)
         if(this.props.login){
             return(
                 <ApolloProvider client={client}>
@@ -173,24 +78,22 @@ export default class Form extends React.Component {
                             <TextInput style = {styles.inputBox} 
                             underlineColorAndroid= 'rgba(0,0,0,0)' 
                             placeholder="Email"
-                            onChangeText={(text) => this.onChangeText('signin', 'email', text)}
+                            onChangeText={(text) => this.onChangeText('email', text)}
                             placeholderTextColor = "#ffffff"/>
             
                             <TextInput style = {styles.inputBox} 
                             underlineColorAndroid= 'rgba(0,0,0,0)' 
                             placeholder="Contraseña"
                             secureTextEntry = {true}
-                            onChangeText={(text) => this.onChangeText('signin', 'password', text)}
+                            onChangeText={(text) => this.onChangeText('password', text)}
                             placeholderTextColor = "#ffffff"/>
                         </View> 
                         
-        
                         <Mutation mutation={signinMutation} variables={{ email: this.state.email,
-                                                                      password: this.state.password,}}>
+                                                                       password: this.state.password,}}>
                             {(createSessionMutation) => 
                             <TouchableOpacity style ={styles.button} onPress={() => {
                                 console.log("informacion signin")
-                                // console.log(signinInfo)
                                 createSessionMutation({
                                 variables: {
                                     email: this.state.email,
@@ -236,13 +139,6 @@ export default class Form extends React.Component {
                 
             )
         }else{
-            // { 
-            //     name: this.state.signup.name, 
-            //     nickname: this.state.signup.nickname, 
-            //     email: this.state.signup.email, 
-            //     password: this.state.signup.password, 
-            //     password_confirmation: this.state.signup.password_confirmation 
-            // }
             return(
                 <ApolloProvider client={client}>
                     <View style = {styles.container}>  
