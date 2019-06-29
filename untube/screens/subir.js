@@ -6,17 +6,32 @@ import {
   Text,
   View,
   Button,
+  TextInput,KeyboardAvoidingView
   
 } from 'react-native';
+import { Dropdown } from 'react-native-material-dropdown';
+
 var uri;
 import CameraRollPicker from 'react-native-camera-roll-picker';
-
 import Header from '../components/Header';
 import SideMenu from 'react-native-side-menu';
 import Menu from '../components/Menu';
 
+let category = [{
+  value: 'Musica'
+}, {
+  value: 'Cine'
+}, {
+  value: 'Vloggs'
+},{
+  value: 'Video Juegos'
+}, {
+  value: 'Otros'
+}];
+let categories = {'Musica':'1','Cine':'2','Vloggs':'3','Video Juegos':'y','Otros':'5'}
 
 export default class subir extends React.Component {
+  
   static navigationOptions = {
     header: null,
   };
@@ -28,11 +43,25 @@ export default class subir extends React.Component {
       num: 0,
       selected: [],
       isOpen: false,
+      title: '',
+      description:'-',
+      category:'Otros'
     };
 
     this.getSelectedImages = this.getSelectedImages.bind(this);
+    this.verData = this.verData.bind(this)
   }
 
+  verData(){
+    user_id = '1'
+    if(this.state.description==''){this.setState({description:"-"})}
+    if(this.state.title==''){}
+    else{
+      console.log('upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)
+      ur = 'upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description
+      this.sendVideo(ur);
+    }
+  }
 // Funciones para el sidebar
   toggle(){
 		this.setState({
@@ -59,8 +88,7 @@ export default class subir extends React.Component {
     console.log(uri);
   
   }
-  sendVideo(){
-    console.log("hola");
+  sendVideo(ur){
     var file = {
       uri: uri,
       type: 'video/mp4',
@@ -71,7 +99,7 @@ export default class subir extends React.Component {
     formdata.append('file', file);
     console.log(file);
 
-   fetch("http://34.73.94.91:3001/subir", {
+   fetch("http://35.196.3.185:3001/"+ur, {
     method: 'post',
     headers: {
       'Content-Type': 'multipart/form-data',
@@ -85,17 +113,20 @@ export default class subir extends React.Component {
     })    
 
   }
- 
+  
   render() {
+    
     return (
+
       <View style={{flex: 1}}>
+
         <SideMenu
 					menu={<Menu navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>}
 					isOpen={this.state.isOpen}
-					onChange={(isOpen) => this.updateMenu(isOpen)}
-					>
+					onChange={(isOpen) => this.updateMenu(isOpen)}>
+
 							<Header navigation={this.props.navigation} toggle={this.toggle.bind(this)}/>
-							
+
               <View style={styles.container}>
                 <View style={styles.content}>
                   <Text style={styles.text}>
@@ -111,11 +142,35 @@ export default class subir extends React.Component {
                   imagesPerRow={3}
                   imageMargin={5}
                   callback={this.getSelectedImages} />
-                  
-                  <Button title="Upload Videos"  onPress={this.sendVideo}/>
+
+                <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset="60" >
+                  <View>
+                <TextInput  style = {styles.inputBox}
+                underlineColorAndroid= 'rgba(0,0,0,0)' 
+                placeholder="*Title"
+                placeholderTextColor = "#ffffff"
+                onChangeText={(title) => this.setState({title})}
+                /> 
+                <TextInput  style = {styles.inputBox}
+                underlineColorAndroid= 'rgba(0,0,0,0)' 
+                placeholder="Description"
+                placeholderTextColor = "#ffffff"
+                onChangeText={(description) => this.setState({description})}
+                /> 
+                <Dropdown style = {styles.Dropdown}
+                  label='- Category'  
+                  data={category}
+                  selectedItemColor = '#3A53D0' 
+                  onChangeText={(category)=> this.setState({category})}
+                />
+                
+                <Button title="Upload Videos"  onPress={this.verData}/>
+                </View>
+                </KeyboardAvoidingView>
               </View>
 
 				</SideMenu>
+
       </View>
       
     );
@@ -146,4 +201,20 @@ const styles = StyleSheet.create({
   info: {
     fontSize: 12,
   },
+  
+  inputBox:{
+    width: 300,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    borderRadius: 25,
+    paddingHorizontal: 16,
+    fontSize: 16,
+    color: '#ffffff',
+    marginVertical: 10,
+    marginLeft: 10
+  },
+  Dropdown:{
+    fontSize: 16,
+    color: '#ffffff',
+    marginLeft: 20
+  }
 });
