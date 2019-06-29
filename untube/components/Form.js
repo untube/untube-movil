@@ -4,36 +4,353 @@ import{
     Text,
     View,
     TextInput,
-    TouchableOpacity
+    TouchableOpacity,
+    Alert
 } from 'react-native';
 
+import gql from 'graphql-tag';
+import ApolloClient from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloProvider, graphql } from 'react-apollo';
+import { Mutation } from 'react-apollo'
+
+
+
+class userInput{
+    constructor(user){
+        this.name = user.name
+        this.nickname = user.nickname
+        this.email = user.email
+        this.password = user.password
+        this.password_confirmation = user.password_confirmation    
+    }
+}
+
+class sessionInput {
+
+    constructor(user){
+        this.email = user.email
+        this.password = user.password
+    }
+}
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+  
+const signupMutation =gql `
+mutation createUserMutation($name: String!, $nickname: String!, $email: String!, $password: String!, $password_confirmation: String!){
+    createUser(user:{
+        name: $name,
+        nickname: $nickname,
+        email: $email,
+        password: $password,
+        password_confirmation: $password_confirmation
+    }){
+      token
+      type
+      client
+    }
+  }
+`
+
+const signinMutation =gql `
+mutation createSessionMutation($email: String!, $password: String!) {
+    createSession(session:{
+        email: $email,
+        password: $password,
+    }){
+        token
+        id
+        nickname
+  }
+}
+`
+
+// const UserSingup = graphql(signupQuery,  {
+//     options: (props) => ({ variables: { user: props.user } })
+//     })(props => {
+//     const { error, UserSingup } = props.data;
+//     console.log("el props");
+//     console.log(props);
+//     if (error) {
+//       console.log("error en el graphql")
+//     }
+//     if (UserSingup) {
+//     //     var ids = []
+//     //   for (let index = 0; index < recommendationsByUser.ids.length; index++) {
+//     //       const element = recommendationsByUser.ids[index];
+//     //       ids[index] = element
+//     //   }
+        
+//         return UserSingup
+//     }else{
+//         // <List navigation={props.elProps} data={show_second}/>
+//         console.log("NOOOOOOOO funciona")
+//         return <Text>No Funciona</Text>;
+//     }
+    
+//     return <Text>Loading...</Text>;
+//   });
+
+
+
+//   this.state = {
+//     signup:{
+//         name: '',
+//         nickname: '',
+//         email: '',
+//         password: '',
+//         password_confirmation:'',
+//     },
+//     signin:{
+//         email: '',
+//         password: '',
+//     }
+    
+// }
+
 export default class Form extends React.Component {
+    constructor(props){
+        super(props)
+        this.state = {
+            name: '',
+            nickname: '',
+            email: '',
+            password: '',
+            password_confirmation:'',
+        }
+        
+    }
+    onChangeText = (key,  val) => {
+        this.setState({ [key]: val })
+        // console.log(this.state)
+      }
 
+    //   onChangeText = (key, key2, val) => {
+    //     let temp = this.state[key]
+    //     temp[key2] = val
+    //     this.setState({ [key]: temp })
+    //     console.log(this.state)
+    //   }
+    signup(){
+        if(this.state.password != this.state.password_confirmation){
+            Alert.alert(
+                'Alert Title',
+                'password does not match',
+                [
+                  {text: 'OK', onPress: () => console.log('OK Pressed')},
+                ],
+                {cancelable: false},
+              );
+        }else{
+            console.log("funciona?")
+            // console.log(this.state)
+
+            
+            // resultado = UserSingup( user={this.state})
+            resultado = true
+            
+            return resultado
+        }
+
+    }
+
+
+    login(){
+
+    }
+    
     render(){
-        return(
-            <View style = {styles.container}>  
-                <TextInput style = {styles.inputBox} 
-                underlineColorAndroid= 'rgba(0,0,0,0)' 
-                placeholder="Email"
-                placeholderTextColor = "#ffffff"/>
+        // let signupInfo = new userInput(this.state.signup)
+        // let signinInfo = new sessionInput(this.state.signin)
+        if(this.props.login){
+            return(
+                <ApolloProvider client={client}>
+                    <View style = {styles.container}> 
+                        <View>
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Email"
+                            onChangeText={(text) => this.onChangeText('signin', 'email', text)}
+                            placeholderTextColor = "#ffffff"/>
+            
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Contraseña"
+                            secureTextEntry = {true}
+                            onChangeText={(text) => this.onChangeText('signin', 'password', text)}
+                            placeholderTextColor = "#ffffff"/>
+                        </View> 
+                        
+        
+                        <Mutation mutation={signinMutation} variables={{ email: this.state.email,
+                                                                      password: this.state.password,}}>
+                            {(createSessionMutation) => 
+                            <TouchableOpacity style ={styles.button} onPress={() => {
+                                console.log("informacion signin")
+                                // console.log(signinInfo)
+                                createSessionMutation({
+                                variables: {
+                                    email: this.state.email,
+                                    password: this.state.password,
+                                }
+                                
+                                })
+                                .then(res => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Bienvenido!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                })
+                                .catch(err => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Hubo un error!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log(err)},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                })
+                                this.setState({ name: '', nickname: '', email: '', password: '', password_confirmation:'' });
+                                //Aqui se hace el navigate a el home
+                            }}>
+                                <Text style = {styles.buttonText} >{this.props.type}</Text>
+                            </TouchableOpacity>}
 
-                <TextInput style = {styles.inputBox} 
-                underlineColorAndroid= 'rgba(0,0,0,0)' 
-                placeholder="Contraseña"
-                secureTextEntry = {true}
-                placeholderTextColor = "#ffffff"/>
+                        </Mutation>
 
-                <TouchableOpacity style ={styles.button}>
-                    <Text style = {styles.buttonText}>{this.props.type}</Text>
-                </TouchableOpacity>
-            </View>
-        )
+                       
+                    </View>
+                </ApolloProvider>
+                
+            )
+        }else{
+            // { 
+            //     name: this.state.signup.name, 
+            //     nickname: this.state.signup.nickname, 
+            //     email: this.state.signup.email, 
+            //     password: this.state.signup.password, 
+            //     password_confirmation: this.state.signup.password_confirmation 
+            // }
+            return(
+                <ApolloProvider client={client}>
+                    <View style = {styles.container}>  
+                        <View style = {styles.formContainer}>
+                           <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Nombre completo"
+                            onChangeText={(text) => this.onChangeText('name', text)}
+                            placeholderTextColor = "#ffffff"/>
+
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Nickname"
+                            onChangeText={(text) => this.onChangeText( 'nickname', text)}
+                            placeholderTextColor = "#ffffff"/>
+                            
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Email"
+                            onChangeText={(text) => this.onChangeText('email', text)}
+                            placeholderTextColor = "#ffffff"/>
+            
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Contraseña"
+                            onChangeText={(text) => this.onChangeText('password', text)}
+                            secureTextEntry = {true}
+                            placeholderTextColor = "#ffffff"/>
+
+                            <TextInput style = {styles.inputBox} 
+                            underlineColorAndroid= 'rgba(0,0,0,0)' 
+                            placeholder="Confirmar Contraseña"
+                            onChangeText={(text) => this.onChangeText('password_confirmation', text)}
+                            secureTextEntry = {true}
+                            placeholderTextColor = "#ffffff"/>                            
+                        </View>
+
+                        <Mutation mutation={signupMutation} variables={{ 
+                                                    name: this.state.name,
+                                                    nickname: this.state.nickname,
+                                                    email: this.state.email,
+                                                    password: this.state.password,
+                                                    password_confirmation: this.state.password_confirmation
+                                                }}>
+                            {(createUserMutation) => 
+                                <TouchableOpacity style ={styles.button} onPress={() => {
+                                    if(this.state.password == this.state.password_confirmation){
+                                        
+                                        createUserMutation({
+                                            variables: {
+                                                name: this.state.name,
+                                                nickname: this.state.nickname,
+                                                email: this.state.email,
+                                                password: this.state.password,
+                                                password_confirmation: this.state.password_confirmation
+                                            }
+                                            })
+                                            .then(res => {
+                                                Alert.alert(
+                                                'Alert Title',
+                                                'usuario creado',
+                                                [
+                                                {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                                ],
+                                                {cancelable: false},
+                                            );
+                                            return res
+                                            }).then(res => {
+                                                //aqui se guarda el token en el local storage
+                                                console.log(res)
+                                            })
+                                            .catch(err => <Text>{err}</Text>);
+                                            this.setState({ name: '', nickname: '', email: '', password: '', password_confirmation:'' });
+                                            //Aqui se hace el navigate a el home
+                                    }else{
+                                        Alert.alert(
+                                            'Alert Title',
+                                            'password does not match',
+                                            [
+                                            {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                            ],
+                                            {cancelable: false},
+                                        );
+                                    }
+                                    
+                                }}>
+                                    <Text style = {styles.buttonText} >{this.props.type}</Text>
+                                </TouchableOpacity>}
+                        </Mutation>
+                        
+                        
+                    </View>
+
+                </ApolloProvider>
+            )
+        }
+        
     }
 }
 
 const styles = StyleSheet.create({
     container:{
         flexGrow: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
+    },
+    formContainer:{
+        flex: 1,
         alignItems: 'center',
         justifyContent: 'center'
     },
@@ -49,7 +366,7 @@ const styles = StyleSheet.create({
 
     button: {
         width: 300,
-        backgroundColor: '#1c313a',
+        backgroundColor: '#3860D8',
         borderRadius: 25,
         marginVertical: 10,
         paddingVertical: 13
