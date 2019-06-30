@@ -14,7 +14,7 @@ export default class Login extends React.Component {
         return(
             <View style = {styles.container}>
                 <Text>Login</Text>
-                <Form type = "Iniciar Sesión"/>
+                <Form type = "Iniciar Sesión" login={true}/>
                 <View style = {styles.signupTextCont}>
                     <Text style = {styles.signupText}>¿Ya tienes una cuenta?</Text>
                     <Text style = {styles.signupButton}>Inicia Sesión</Text>
