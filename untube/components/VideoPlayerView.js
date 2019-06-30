@@ -14,11 +14,10 @@ import SideMenu from 'react-native-side-menu';
 import Menu from '../components/Menu';
 
 import gql from 'graphql-tag';
-import { AppRegistry } from 'react-native';
 import ApolloClient from 'apollo-client';
 import { HttpLink, InMemoryCache } from 'apollo-client-preset';
 import { ApolloProvider, graphql } from 'react-apollo';
-import { Query } from "react-apollo";
+
 
 
 const client = new ApolloClient({
