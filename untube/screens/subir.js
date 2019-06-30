@@ -6,7 +6,8 @@ import {
   Text,
   View,
   Button,
-  TextInput,KeyboardAvoidingView
+  TextInput,KeyboardAvoidingView,
+  AsyncStorage
   
 } from 'react-native';
 import { Dropdown } from 'react-native-material-dropdown';
@@ -49,13 +50,16 @@ export default class subir extends React.Component {
     };
 
     this.getSelectedImages = this.getSelectedImages.bind(this);
-    this.verData = this.verData.bind(this)
+    this.verData = this.verData.bind(this);
+    this.getKey = this.getKey.bind(this);
   }
 
   verData(){
-    user_id = '1'
+
+    user_id = this.getKey('user_id')
     if(this.state.description==''){this.setState({description:"-"})}
-    if(this.state.title==''){}
+    if(true){}
+    //if(this.state.title==''){}
     else{
       console.log('upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)
       ur = 'upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description
@@ -112,6 +116,15 @@ export default class subir extends React.Component {
       console.log(err)
     })    
 
+  }
+
+  async getKey() {
+    try {
+      const value = await AsyncStorage.getItem('key');
+      //alert(value)
+    } catch (error) {
+      console.log("Error retrieving data" + error);
+    }
   }
   
   render() {
