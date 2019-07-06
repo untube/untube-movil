@@ -7,7 +7,8 @@ import Menu from '../components/Menu';
 import {
   StyleSheet,
   View,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native';
 
 
@@ -96,7 +97,14 @@ export default class HomeScreen extends React.Component {
 			isOpen: false
 		}
 	}
-
+	async saveKey(value) {
+		try {
+		  await AsyncStorage.setItem('user_id', value);
+		  console.log('save in AsyncStorage --> '+value)
+		} catch (error) {
+		  alert("Error saving data" + error);
+		}
+	}
 	toggle(){
 		this.setState({
 			isOpen: !this.state.isOpen
@@ -113,8 +121,11 @@ export default class HomeScreen extends React.Component {
 
   
 	render() {
+		this.saveKey("llave");
 		const Opcion = (() => {
 			if (AllVideos instanceof Array){
+
+		
 				return <List navigation={this.props.navigation} data={AllVideos}/>
 			}else{
 				return <Text>Loading..</Text>

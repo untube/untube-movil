@@ -5,7 +5,8 @@ import{
     View,
     TextInput,
     TouchableOpacity,
-    Alert
+    Alert,
+    AsyncStorage
 } from 'react-native';
 
 import gql from 'graphql-tag';
@@ -68,7 +69,14 @@ export default class Form extends React.Component {
         this.setState({ [key]: val })
       }
 
-      
+    async saveKey(key_value,value) {
+		try {
+		  await AsyncStorage.setItem(key_value, value);
+		  console.log('save in AsyncStorage '+key_value+' --> '+value)
+		} catch (error) {
+		  alert("Error saving data" + error);
+		}
+	} 
     render(){
         if(this.props.login){
             return(
@@ -112,6 +120,9 @@ export default class Form extends React.Component {
                                   );
                                   //aqui se guarda el token en el local storage
                                   console.log(res)
+                                  console.log(res["data"]["createSession"]["token"]) 
+                                  this.saveKey('token',res["data"]["createSession"]["token"])
+                                  this.saveKey('user_id',res["data"]["createSession"]["id"].toString())
                                 })
                                 .catch(err => {
                                     Alert.alert(
