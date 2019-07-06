@@ -64,7 +64,7 @@ export default class subir extends React.Component {
     else{
       console.log('upload/'+this.state.user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)
       ur = 'upload/'+this.state.user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description
-      //this.sendVideo(ur);
+      this.sendVideo(ur);
     }
   }
 // Funciones para el sidebar
