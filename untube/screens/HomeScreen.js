@@ -7,7 +7,8 @@ import Menu from '../components/Menu';
 import {
   StyleSheet,
   View,
-  Text
+  Text,
+  AsyncStorage
 } from 'react-native';
 
 
@@ -20,21 +21,9 @@ import { Query } from "react-apollo";
 
 
 const client = new ApolloClient({
-    link: new HttpLink({ uri: 'http://35.196.3.185:5000/graphql'}),
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
     cache: new InMemoryCache().restore({}),
   });
-
-const videosQuery = gql`
-query{
-	allVideos{
-	  id
-	  category_id
-	  title
-	  description
-	  image
-	}
-}
-`;
 
 const show_second = [
     {
@@ -73,7 +62,17 @@ const show_second = [
     },
 ]
 
-
+const videosQuery = gql`
+query{
+	allVideos{
+	  id
+	  category_id
+	  title
+	  description
+	  image
+	}
+}
+`;
 
 const AllVideos = graphql(videosQuery)(props => {
 	const { error, allVideos } = props.data;
@@ -98,7 +97,14 @@ export default class HomeScreen extends React.Component {
 			isOpen: false
 		}
 	}
-
+	async saveKey(value) {
+		try {
+		  await AsyncStorage.setItem('user_id', value);
+		  console.log('save in AsyncStorage --> '+value)
+		} catch (error) {
+		  alert("Error saving data" + error);
+		}
+	}
 	toggle(){
 		this.setState({
 			isOpen: !this.state.isOpen
@@ -115,8 +121,11 @@ export default class HomeScreen extends React.Component {
 
   
 	render() {
+		this.saveKey("llave");
 		const Opcion = (() => {
 			if (AllVideos instanceof Array){
+
+		
 				return <List navigation={this.props.navigation} data={AllVideos}/>
 			}else{
 				return <Text>Loading..</Text>
