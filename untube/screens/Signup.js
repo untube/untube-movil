@@ -13,7 +13,7 @@ export default class Signup extends React.Component {
         return(
             <View style = {styles.container}>
                 <Text>Signup</Text>
-                <Form type = "Registrarse"/>
+                <Form type = "Registrarse" login={false}/>
                 <View style = {styles.signupTextCont}>
                     <Text style = {styles.signupText}>¿No tienes una cuenta?</Text>
                     <Text style = {styles.signupButton}>Registrate!</Text>
