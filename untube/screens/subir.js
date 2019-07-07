@@ -58,7 +58,7 @@ export default class subir extends React.Component {
 
     user_id = this.getKey('user_id')
     if(this.state.description==''){this.setState({description:"-"})}
-    if(true){}
+    if(user_id == ''){}
     //if(this.state.title==''){}
     else{
       console.log('upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)

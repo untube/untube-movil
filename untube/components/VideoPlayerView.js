@@ -211,7 +211,7 @@ export default class VideoPlayerView extends Component{
 
     componentWillMount(){
         this.setState({comment: comentarios})
-        _retrieveData()
+        this._retrieveData()
     }
 
      
