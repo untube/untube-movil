@@ -9,15 +9,41 @@ import {
     Alert
 } from 'react-native'
 
+import gql from 'graphql-tag';
+import ApolloClient from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloProvider, graphql } from 'react-apollo';
+import { Mutation } from 'react-apollo'
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+const commentariesMutation =gql `
+    mutation createCommentMutation($subject: String!, $description: String!){
+    createComment(comment:{
+      subject: $subject
+      description: $description
+    }){
+      token
+      description
+    }
+  }
+  `
+
+
 export default class Compentarios extends Component{
 
-    constructor(){
-        super()
-
+    constructor(props){
+        super(props)
         this.state = {
-            comment: ''
+            subject: '',
+            description: '',
         }
+        
     }
+
     changeComment(comment){
         this.setState({comment})
     }
@@ -30,42 +56,92 @@ export default class Compentarios extends Component{
     }
     render(){
         return(
-            <View style={styles.container}>
-                <View>
-                    <Text style={styles.tittle}>Deja tu comentario!</Text>
-                    <TextInput 
-                    multiline = {true}
-                    style = {[styles.input, styles.textArea]}
-                    placeholder = "Comentario"
-                    value={this.state.comment}
-                    onChangeText={(comment) => this.changeComment(comment)}/>
-                    <TouchableHighlight 
-                    style ={styles.button}
-                    onPress = {() => this.buttonPressed()}>
-                        <Text style={styles.textButton}>Enviar</Text>
-                    </TouchableHighlight>
+
+            <ApolloProvider client={client}>
+                <View style={styles.container}>
+                    <View>
+                        <TextInput 
+                        multiline = {true}
+                        style = {[styles.input, styles.textArea]}
+                        placeholder = "Comentar"
+                        value={this.state.comment}
+                        onChangeText={(comment) => this.changeComment(comment)}/>
+
+                    </View>
+
+                    <Mutation mutation={commentariesMutation} variables={{ subject: this.state.subject,
+                                                                       description: this.state.description,}}>
+                            {(createCommentMutation) => 
+                            <TouchableHighlight style ={styles.button} onPress={() => {
+                                console.log("Comentario")
+                                createCommentMutation({
+                                variables: {
+                                    subject: this.state.subject,
+                                    description: this.state.description,
+                                }
+                                
+                                })
+                                .then(res => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Gracias por comentar!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                  console.log(res["data"]["createSession"]["token"]) 
+                                  this.saveKey('token',res["data"]["createSession"]["token"])
+                                  this.saveKey('user_id',res["data"]["createSession"]["id"].toString())
+                                })
+                                .catch(err => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Hubo un error!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log(err)},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                })
+                                this.setState({ subject: '', description: ''});
+                                //Aqui se hace el navigate a el home
+                            }}>
+                                <Text style={styles.textButton}>Enviar</Text>
+                            </TouchableHighlight>}
+
+                        </Mutation>
+
                 </View>
-            </View>
+
+            </ApolloProvider>
+
         );
     }
 }
 
 const styles = StyleSheet.create({
     container:{
-        flex:1,
         backgroundColor: '#F5FCFF',
-        marginTop:30,
-        paddingLeft: 15,
-        paddingRight: 15
+        alignItems: 'center',
+        justifyContent: 'center'
     },
     input:{
         height: 40,
         borderColor: '#ccc',
         borderWidth: 2,
-        marginBottom: 20
+        marginBottom: 20,
+        marginTop: 20
     },
     textArea: {
-        height: 60
+        height: 60,
+        width: 300,
+        marginTop: 20
+
     },
     tittle: {
         textAlign: 'center',
@@ -73,9 +149,12 @@ const styles = StyleSheet.create({
         marginBottom: 5
     },
     button: {
+        width: 300,
         backgroundColor: 'skyblue',
-        paddingTop: 15,
-        paddingBottom: 15
+        borderRadius: 25,
+        marginVertical: 10,
+        paddingVertical: 13
+
     },
     textButton: {
         textAlign: 'center',
