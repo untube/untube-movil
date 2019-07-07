@@ -68,7 +68,7 @@ const recommendQuery = gql`
 `;
 
 
-  
+var user_id_r = 1
 const RecommendComponent = graphql(recommendQuery,  {
     options: (props) => ({ variables: { code: props.code } })
     })(props => {
@@ -202,7 +202,10 @@ export default class VideoPlayerView extends Component{
           const value = await AsyncStorage.getItem('token');
           if (value !== null) {
             // We have data!!
-            console.log(value);
+            console.log('el token  ' + value);
+            user_id_r = 1
+          }else{
+            user_id_r = 1
           }
         } catch (error) {
           // Error retrieving data
@@ -260,6 +263,9 @@ export default class VideoPlayerView extends Component{
                                         shouldPlay={true}
                                         style={{width:width, height: 300}}
                                         isPortrait={false}
+                                        positionMillis={0}
+                                        playbackInstancePosition={0}
+                                        playbackInstanceDuration={0}
                                         // style={{backgroundColor: 'black'}}
                                         // rotation={90}
 
@@ -272,7 +278,7 @@ export default class VideoPlayerView extends Component{
                                 <View style={{flex:2}}>
                                     
                                     
-                                    <RecommendComponent elProps={elProps} code={0}/>
+                                    <RecommendComponent elProps={elProps} code={1}/>
                                     {/* <RecommendComponent code={0}/> */}
                                 </View>
 
