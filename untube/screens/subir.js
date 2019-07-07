@@ -37,6 +37,7 @@ export default class subir extends React.Component {
     header: null,
   };
   state = { animating: false }
+  //constructor
   constructor(props) {
     super(props);
 
@@ -46,7 +47,8 @@ export default class subir extends React.Component {
       isOpen: false,
       title: '',
       description:'-',
-      category:'Otros'
+      category:'Otros',
+      user_id: '-1',
     };
 
     this.getSelectedImages = this.getSelectedImages.bind(this);
@@ -55,14 +57,13 @@ export default class subir extends React.Component {
   }
 
   verData(){
-
-    user_id = this.getKey('user_id')
+    
     if(this.state.description==''){this.setState({description:"-"})}
-    if(user_id == ''){}
-    //if(this.state.title==''){}
+    if(this.state.num==0){alert("Selecciona un video");return 0;}
+    if(this.state.title==''){alert("Ponle un titulo");}
     else{
-      console.log('upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)
-      ur = 'upload/'+user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description
+      console.log('upload/'+this.state.user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description)
+      ur = 'upload/'+this.state.user_id+'/'+categories[this.state.category]+'/'+this.state.title+'/'+this.state.description
       this.sendVideo(ur);
     }
   }
@@ -120,15 +121,15 @@ export default class subir extends React.Component {
 
   async getKey() {
     try {
-      const value = await AsyncStorage.getItem('key');
-      //alert(value)
+      const value = await AsyncStorage.getItem('user_id');
+      this.setState({user_id: value});
     } catch (error) {
       console.log("Error retrieving data" + error);
     }
   }
   
   render() {
-    
+    this.getKey();
     return (
 
       <View style={{flex: 1}}>
