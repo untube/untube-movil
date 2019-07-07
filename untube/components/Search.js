@@ -10,8 +10,66 @@ import {
     ScrollView,
     Image,
 } from 'react-native'
-import { FontAwesome, Ionicons } from '@expo/vector-icons';
+import { FontAwesome, MaterialIcons } from '@expo/vector-icons';
 import List from './List';
+
+
+
+import gql from 'graphql-tag';
+import { AppRegistry } from 'react-native';
+import ApolloClient from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloProvider, graphql } from 'react-apollo';
+import { Query } from "react-apollo";
+
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+  const videosQuery = gql`
+query{
+	allVideos{
+	  id
+	  category_id
+	  title
+	  description
+	  image
+	}
+}
+`;
+
+const consulta = gql`
+query VideosByName($name: String!){
+    videosByName(name:$name){
+      id
+      description
+    }
+  }
+`;
+
+var data_videos = []
+
+const AllVideos = graphql(videosQuery)(props => {
+	const { error, allVideos } = props.data;
+
+	if (error) {
+		return <Text>error</Text>;
+	}
+	if (allVideos) {
+        data_videos = allVideos
+        return <List navigation={props.navigation} data={allVideos}/>
+        
+        
+	}
+
+	return <Text>Loading..</Text>
+
+});
+
+
+
 
 
 const {width, height} = Dimensions.get('window')
@@ -76,11 +134,10 @@ export default class Search extends Component {
         }
     }
 
-    
 
     filter(text){
-        const newData = show_second.filter(function(item){
-            const itemData = item.name.toUpperCase()
+        const newData = data_videos.filter(function(item){
+            const itemData = item.title.toUpperCase()
             const textData = text.toUpperCase()
             return itemData.indexOf(textData) > -1
         })
@@ -94,62 +151,71 @@ export default class Search extends Component {
         this.setState({text: '', data: ''})
     }
 
-    // _renderItem(navigation, item){
-        
-    //     return (
-    //         <TouchableWithoutFeedback onPress={
-    //             () => navigation.navigate('Reproduce', {item: item})}>
-    //                 <Image key={item.key} style={styles.image} source={{uri: item.image}}/>
-    //         </TouchableWithoutFeedback>
-    //     )
-    // }
     render() {
         
         return (
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <FontAwesome
-                        name='search'
-                        color='grey'
-                        size = {18}
-                        style = {styles.searchIcon}
-                    />
-                    <TextInput
-                        value={this.state.text}
-                        onChangeText={(text) => this.filter(text)}
-                        style={styles.input}
-                        placeholder="Search"
-                        placeholderTextColor='grey'
-                        autoFocus={true}>
-                    </TextInput> 
-
-                    {this.state.text ?
-                        <TouchableWithoutFeedback onPress={() => this.deleteData()}>
-                            <FontAwesome 
-                            name='times-circle'
+            <ApolloProvider client={client}>
+                <View style={styles.container}>
+                    <View style={styles.header}>
+                        <FontAwesome
+                            name='search'
                             color='grey'
                             size = {18}
-                            style = {styles.iconInputClose}
+                            style = {styles.searchIcon}
                         />
+                        <TextInput
+                            value={this.state.text}
+                            onChangeText={(text) => this.filter(text)}
+                            style={styles.input}
+                            placeholder="Search"
+                            placeholderTextColor='grey'
+                            autoFocus={true}>
+                        </TextInput> 
+
+                        {this.state.text ?
+                            <TouchableWithoutFeedback onPress={() => this.deleteData()}>
+                                <FontAwesome 
+                                name='times-circle'
+                                color='grey'
+                                size = {18} 
+                                style = {styles.iconInputClose}
+                            />
+                            </TouchableWithoutFeedback>
+                            
+                        : null}
+
+                        {this.state.text ?
+                            <TouchableWithoutFeedback onPress={() => client.query({
+                                query: consulta,
+                                variables: { name: "hey" }
+                            })
+                            }>
+                                <MaterialIcons 
+                                name='search'
+                                color='grey'
+                                size = {18}
+                                style = {styles.iconInputSearch}
+                            />
+                            </TouchableWithoutFeedback>
+                            
+                        : null}
+
+                        <TouchableWithoutFeedback style={styles.cancelButton} onPress={
+                            () => this.props.navigation.goBack()}>
+                                <View style={styles.containerButton}>
+                                    <Text style={styles.cancelButtonText}>Cancel</Text>
+                                </View>
                         </TouchableWithoutFeedback>
+                    </View>
+                    <ScrollView>
                         
-                    : null}
-                    <TouchableWithoutFeedback style={styles.cancelButton} onPress={
-                        () => this.props.navigation.goBack()}>
-                            <View style={styles.containerButton}>
-                                <Text style={styles.cancelButtonText}>Cancel</Text>
-                            </View>
-                    </TouchableWithoutFeedback>
+                        <AllVideos navigation={this.props.navigation}></AllVideos>
+                        
+                    </ScrollView>
                 </View>
-                <ScrollView>
-                    <List navigation={this.props.navigation} data={this.state.data}/>
-                    {/* <FlatList
-                        style={{marginHorizontal: 5}}
-                        data={this.state.data}
-                        renderItem={({item}) => this._renderItem(item)}
-                    /> */}
-                </ScrollView>
-            </View>
+                
+            </ApolloProvider>
+            
         )
     }
 }
@@ -181,6 +247,14 @@ const styles = StyleSheet.create({
         position: 'absolute',
         top: 5,
         right: 90,
+        backgroundColor: 'transparent',
+        zIndex:1,
+        marginTop:5,
+    },
+    iconInputSearch: {
+        position: 'absolute',
+        top: 5,
+        right: 130,
         backgroundColor: 'transparent',
         zIndex:1,
         marginTop:5,

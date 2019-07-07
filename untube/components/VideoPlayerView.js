@@ -5,7 +5,7 @@ import {
     StyleSheet,
     Dimensions,
     FlatList,
-    Button
+    AsyncStorage,
 } from 'react-native'
 import { Video } from 'expo'
 import List from '../components/List';
@@ -198,9 +198,21 @@ export default class VideoPlayerView extends Component{
         mute: false,
     };
 
+    _retrieveData = async () => {
+        try {
+          const value = await AsyncStorage.getItem('token');
+          if (value !== null) {
+            // We have data!!
+            console.log(value);
+          }
+        } catch (error) {
+          // Error retrieving data
+        }
+      };
 
     componentWillMount(){
         this.setState({comment: comentarios})
+        _retrieveData()
     }
 
      
