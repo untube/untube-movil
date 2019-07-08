@@ -13,6 +13,7 @@ import { FontAwesome,} from '@expo/vector-icons';
 import Header from '../components/Header';
 import SideMenu from 'react-native-side-menu';
 import Menu from '../components/Menu';
+import Comentarios from '../components/Comentarios'
 
 import gql from 'graphql-tag';
 import ApolloClient from 'apollo-client';
@@ -273,7 +274,6 @@ export default class VideoPlayerView extends Component{
                                         // onBack={() => null}
                                     /> 
                                 </View>
-                                
 
                                 <View style={{flex:2}}>
                                     
@@ -281,16 +281,23 @@ export default class VideoPlayerView extends Component{
                                     <RecommendComponent elProps={elProps} code={1}/>
                                     {/* <RecommendComponent code={0}/> */}
                                 </View>
-
-                                <View style={styles.container}>
+                                    
+                                <View style={styles.coments}>
                                     <FlatList 
-                                            // horizontal
-                                            ItemSeparatorComponent={() => <View style={{height:5, backgroundColor: '#3860D8'}}></View>}
-                                            renderItem={({item}) =>this._renderItem(item)} 
-                                            data = {this.state.comment}
-                                            keyExtractor={(item) => item.key}>
+                                        // horizontal
+                                        ItemSeparatorComponent={() => <View style={{height:5,backgroundColor: '#3860D8'}}></View>}
+                                        renderItem={({item}) =>this._renderItem(item)} 
+                                        data = {this.state.comment}
+                                        keyExtractor={(item) => item.key}>
                                     </FlatList>
+
                                 </View>
+                                        
+                                <View style={styles.inputcoment}>
+                                    <Comentarios/>
+                                </View>
+                                    
+                                
                             </View>
 				</SideMenu>
                 
@@ -327,5 +334,15 @@ const styles = StyleSheet.create({
         fontSize: 15,    
         paddingLeft: 15,
     },
+    coments: {
+        flex: 2,
+        backgroundColor: '#ffffff',
+        paddingLeft: 30,
+        paddingRight: 20
+    },
+    inputcoment: {
+        flex: 2,
+        backgroundColor: '#ffffff'
+    }
     
 })
