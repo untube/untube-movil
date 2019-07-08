@@ -6,7 +6,8 @@ import {
     Dimensions,
     FlatList,
     AsyncStorage,
-    Switch
+    Switch,
+    KeyboardAvoidingView
 } from 'react-native'
 import { Video } from 'expo'
 import List from '../components/List';
@@ -297,13 +298,20 @@ export default class VideoPlayerView extends Component{
                                         // onBack={() => null}
                                     /> 
                                 </View>
-                                <View style={styles.inputcoment}>
-                                    <Comentarios/>
-                                </View>
-                                   
-                                <Switch onValueChange={value => this.setState({ isHidden: value })}
-                                        value={this.state.isHidden}/>   
-                                {this.cometar()}                          
+
+                                    <View style={styles.inputcoment}>
+
+                                <KeyboardAvoidingView  behavior="padding" enabled>
+                                        <Comentarios/>
+                                </KeyboardAvoidingView>
+                                    </View>
+                                <View style={styles.switch}>
+                                    <Text>Ver comentarios</Text>
+                                    <Switch onValueChange={value => this.setState({ isHidden: value })}
+                                            value={this.state.isHidden}/>  
+                                            
+                                </View>                                    
+                                {this.cometar()}                       
                             </View>
 				</SideMenu>
                 
@@ -348,7 +356,16 @@ const styles = StyleSheet.create({
     },
     inputcoment: {
         flex: 2,
-        backgroundColor: '#ffffff'
+        backgroundColor: '#ffffff',
+        marginBottom: 10
+    },
+    switch: {
+        marginTop: 20,
+        marginBottom: 5,
+        backgroundColor: 'rgba(255,255,255,0.3)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex:1,
     }
     
 })
