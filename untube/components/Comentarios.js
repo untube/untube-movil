@@ -22,7 +22,7 @@ const client = new ApolloClient({
 
 const commentariesMutation =gql`
     mutation createCommentMutation($subject: String!, $description: String!, $idUser: Int!, $idVideo: String!){
-    createComment(comment:{
+        createCommentary(commentary:{
         subject: $subject
         description: $description
         idUser: $idUser
@@ -80,17 +80,17 @@ export default class Compentarios extends Component{
 
                     <Mutation mutation={commentariesMutation} variables={{ subject: this.state.subject,
                                                                            description: this.state.description,
-                                                                           idUser: this.setState.id_user,
-                                                                           idVideo: this.setState.id_video}}>
+                                                                           idUser: this.state.id_user,
+                                                                           idVideo: this.state.id_video}}>
                             {(createCommentMutation) => 
                             <TouchableHighlight style ={styles.button} onPress={() => {
                                 console.log("Comentario")
                                 createCommentMutation({
                                 variables: {
                                     subject: this.state.subject,
-                                        description: this.state.description,
-                                        idUser: this.setState.id_user,
-                                        idVideo: this.setState.id_video,
+                                    description: this.state.description,
+                                    idUser: this.state.id_user,
+                                    idVideo: this.state.id_video,
                                 }
                                 
                                 })
