@@ -319,26 +319,26 @@ export default class VideoPlayerView extends Component{
                                                 
                                                 })
                                                 .then(res => {
-                                                    Alert.alert(
-                                                    'Alert Title',
-                                                    'mutation user!!!',
-                                                    [
-                                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
-                                                    ],
-                                                    {cancelable: false},
-                                                  );
+                                                //     Alert.alert(
+                                                //     'Alert Title',
+                                                //     'mutation user!!!',
+                                                //     [
+                                                //       {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                                //     ],
+                                                //     {cancelable: false},
+                                                //   );
                                                   //aqui se guarda el token en el local storage
                                                   console.log(res)
                                                 })
                                                 .catch(err => {
-                                                    Alert.alert(
-                                                    'Alert Title',
-                                                    'Hubo un error!!!',
-                                                    [
-                                                      {text: 'OK', onPress: () => console.log(err)},
-                                                    ],
-                                                    {cancelable: false},
-                                                  );
+                                                //     Alert.alert(
+                                                //     'Alert Title',
+                                                //     'Hubo un error!!!',
+                                                //     [
+                                                //       {text: 'OK', onPress: () => console.log(err)},
+                                                //     ],
+                                                //     {cancelable: false},
+                                                //   );
                                                 })
                                             }}
                                         /> }

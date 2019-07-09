@@ -23,6 +23,7 @@ import { ApolloProvider, graphql } from 'react-apollo';
 import { Query } from "react-apollo";
 
 
+
 const client = new ApolloClient({
     link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
     cache: new InMemoryCache().restore({}),
@@ -45,11 +46,14 @@ query VideosByName($name: String!){
     videosByName(name:$name){
       id
       description
+      category_id
+	  title
+	  image
     }
   }
 `;
-
 var data_videos = []
+
 
 const AllVideos = graphql(videosQuery)(props => {
 	const { error, allVideos } = props.data;
@@ -58,7 +62,7 @@ const AllVideos = graphql(videosQuery)(props => {
 		return <Text>error</Text>;
 	}
 	if (allVideos) {
-        data_videos = allVideos
+        // data_videos = allVideos
         return <List navigation={props.navigation} data={allVideos}/>
         
         
@@ -69,6 +73,26 @@ const AllVideos = graphql(videosQuery)(props => {
 });
 
 
+const ResultSearch = graphql(consulta,  {
+    options: (props) => ({ variables: { name: props.name } })
+    })(props => {
+    const { error, videosByName } = props.data;
+
+    if (error) {
+        console.log(error)
+        return <Text>error</Text>;
+    }
+    if (videosByName) {
+        console.log(videosByName)
+        //this.setState({data: videosByName})
+        // data_videos = videosByName
+        return <List navigation={props.navigation} data={videosByName}/>
+        //return true
+    }
+
+    return <Text>Loading..</Text>
+
+});
 
 
 
@@ -130,10 +154,37 @@ export default class Search extends Component {
         super(props)
         this.state = {
             text: '',
-            data: ''
+            data: '',
+            name: ''
         }
     }
 
+    searchh(name){
+        console.log("entro al search")
+        const res = graphql(consulta,  {
+            options: () => ({ variables: { name: name } })
+            })(props => {
+            const { error, videosByName } = props.data;
+        
+            if (error) {
+                console.log(error)
+                return false;
+            }
+            if (videosByName) {
+                console.log(videosByName)
+                this.setState({data: videosByName})
+                // data_videos = videosByName
+                // return <List navigation={props.navigation} data={videosByName}/>
+                return true
+            }
+        
+            return false
+        
+        });
+
+        console.log("sale")
+        return res;
+    }
 
     filter(text){
         const newData = data_videos.filter(function(item){
@@ -148,7 +199,7 @@ export default class Search extends Component {
     }
 
     deleteData(){
-        this.setState({text: '', data: ''})
+        this.setState({text: '', data: '', name: ''})
     }
 
     render() {
@@ -173,31 +224,26 @@ export default class Search extends Component {
                         </TextInput> 
 
                         {this.state.text ?
-                            <TouchableWithoutFeedback onPress={() => this.deleteData()}>
-                                <FontAwesome 
-                                name='times-circle'
-                                color='grey'
-                                size = {18} 
-                                style = {styles.iconInputClose}
-                            />
-                            </TouchableWithoutFeedback>
                             
+                                <TouchableWithoutFeedback onPress={() => this.deleteData()}>
+                                    <FontAwesome 
+                                    name='times-circle'
+                                    color='grey'
+                                    size = {18} 
+                                    style = {styles.iconInputClose}
+                                />
+                                </TouchableWithoutFeedback>
                         : null}
 
                         {this.state.text ?
-                            <TouchableWithoutFeedback onPress={() => client.query({
-                                query: consulta,
-                                variables: { name: "hey" }
-                            })
-                            }>
-                                <MaterialIcons 
-                                name='search'
-                                color='grey'
-                                size = {18}
-                                style = {styles.iconInputSearch}
-                            />
-                            </TouchableWithoutFeedback>
-                            
+                            <TouchableWithoutFeedback onPress={() => this.setState({name: this.state.text})}>
+                                    <MaterialIcons 
+                                    name='search'
+                                    color='grey'
+                                    size = {20}
+                                    style = {styles.iconInputSearch}
+                                />
+                                </TouchableWithoutFeedback>
                         : null}
 
                         <TouchableWithoutFeedback style={styles.cancelButton} onPress={
@@ -209,7 +255,11 @@ export default class Search extends Component {
                     </View>
                     <ScrollView>
                         
-                        <AllVideos navigation={this.props.navigation}></AllVideos>
+                        {/* <AllVideos navigation={this.props.navigation}></AllVideos> */}
+                        {this.state.name ?
+                            <ResultSearch navigation={this.props.navigation} name={this.state.text}></ResultSearch>
+                        :null}
+                        
                         
                     </ScrollView>
                 </View>

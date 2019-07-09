@@ -74,25 +74,25 @@ export default class List extends Component {
                                 
                                 })
                                 .then(res => {
-                                    Alert.alert(
-                                    'Alert Title',
-                                    'Bienve hizo el mutation!!!',
-                                    [
-                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
-                                    ],
-                                    {cancelable: false},
-                                  );
+                                //     Alert.alert(
+                                //     'Alert Title',
+                                //     'Bienve hizo el mutation!!!',
+                                //     [
+                                //       {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                //     ],
+                                //     {cancelable: false},
+                                //   );
                                   console.log(res)
                                 })
                                 .catch(err => {
-                                    Alert.alert(
-                                    'Alert Title',
-                                    'Hubo un error!!!',
-                                    [
-                                      {text: 'OK', onPress: () => console.log(err)},
-                                    ],
-                                    {cancelable: false},
-                                  );
+                                //     Alert.alert(
+                                //     'Alert Title',
+                                //     'Hubo un error!!!',
+                                //     [
+                                //       {text: 'OK', onPress: () => console.log(err)},
+                                //     ],
+                                //     {cancelable: false},
+                                //   );
                                 })
                                 
                                 //Aqui se hace el navigate a el home
