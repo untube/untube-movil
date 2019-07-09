@@ -5,6 +5,7 @@ import {
     StyleSheet,
     FlatList,
     Image,
+    Alert,
     TouchableWithoutFeedback
 } from 'react-native'
 
@@ -60,49 +61,68 @@ export default class List extends Component {
         return (
             // {width: 128, height: 180}
             <ApolloProvider client={client}>
-                <Mutation mutation={[userMutation, videoMutation]} variables={{ id_user: 1,
-                                                                id_category: 1,
-                                                                id_video: "5d2261cfa9b574000683b378", 
-                                                                id_category: 1}}>
-                    <TouchableWithoutFeedback onPress={() => {
-                        console.log("iniciando el mutation 1")
-                        feedUserDBMutation({
-                        variables: {
-                            id_user: 1,
-                            id_category: 1
-                        }
-                        
-                        })
-                        .then(() =>
-                        feedVideoDBMutation({
-                            variables:{
-                                id_video: "5d2261cfa9b574000683b378", 
-                                id_category: 1
-                            }
-                        })
-
-                        ).then(() => navigation.navigate('Reproduce', {item: item})
-                        )
-                        .catch(err => {
-                            
-                        })
-                        
-                        //Aqui se hace el navigate a el home
-                    }}>
-                        <View style={styles.containerImage}>
-                            <Image style={styles.image} source={{uri: uri64}}/>
-                            <View style={styles.containerText}>
-                                <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.title}</Text>
-                                <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
-                                <Text>Categoria: {item.category_id}</Text>
+                <Mutation mutation={videoMutation} variables={{ id_video: item.id,
+                                                                id_category: item.category_id}}>
+                    {(feedVideoDBMutation) => 
+                            <TouchableWithoutFeedback  onPress={() => {
+                                console.log("informacion signin")
+                                feedVideoDBMutation({
+                                variables: {
+                                    id_video: item.id,
+                                    id_category: item.category_id,
+                                }
                                 
-                            </View>
-                        </View>
-                    </TouchableWithoutFeedback>
+                                })
+                                .then(res => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Bienve hizo el mutation!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  console.log(res)
+                                })
+                                .catch(err => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Hubo un error!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log(err)},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                })
+                                
+                                //Aqui se hace el navigate a el home
+                                navigation.navigate('Reproduce', {item: item})
+                            }}>
+
+                                <View style={styles.containerImage}>
+                                    <Image style={styles.image} source={{uri: uri64}}/>
+                                    <View style={styles.containerText}>
+                                        <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.title}</Text>
+                                        <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
+                                        <Text>Categoria: {item.category_id}</Text>
+                                    </View>
+                                </View>
+
+                            </TouchableWithoutFeedback>}                                                        
+
                 </Mutation>
+
             </ApolloProvider>
-            
-            
+            // <TouchableWithoutFeedback onPress={() => navigation.navigate('Reproduce', {item: item})}>
+            //     <View style={styles.containerImage}>
+            //         <Image style={styles.image} source={{uri: uri64}}/>
+            //         <View style={styles.containerText}>
+            //             <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.title}</Text>
+            //             <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
+            //             <Text>Categoria: {item.category_id}</Text>
+            //         </View>
+            //     </View>
+            // </TouchableWithoutFeedback>
         )
     }
 

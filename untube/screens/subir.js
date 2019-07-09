@@ -29,7 +29,7 @@ let category = [{
 }, {
   value: 'Otros'
 }];
-let categories = {'Musica':'1','Cine':'2','Vloggs':'3','Video Juegos':'y','Otros':'5'}
+let categories = {'Musica':"5d225ff4f95b700001554b17",'Cine':"5d225ff8f95b700001554b18",'Vloggs':"5d225ffcf95b700001554b19",'Video Juegos':'"5d226000f95b700001554b1a"','Otros':'5'}
 
 export default class subir extends React.Component {
   

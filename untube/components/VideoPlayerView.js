@@ -7,6 +7,7 @@ import {
     FlatList,
     AsyncStorage,
     Switch,
+    Alert,
     KeyboardAvoidingView
 } from 'react-native'
 import { Video } from 'expo'
@@ -21,6 +22,7 @@ import gql from 'graphql-tag';
 import ApolloClient from 'apollo-client';
 import { HttpLink, InMemoryCache } from 'apollo-client-preset';
 import { ApolloProvider, graphql } from 'react-apollo';
+import { Mutation } from 'react-apollo'
 
 
 
@@ -71,13 +73,22 @@ const recommendQuery = gql`
 `;
 
 
+const userMutation =gql`
+mutation feedUserDBMutation($id_user: Int!, $id_category: String!){
+    feedUserDB(userPreferences:{
+        id_user: $id_user
+        id_category: $id_category
+      })
+    }
+`
+
 var user_id_r = 1
 const RecommendComponent = graphql(recommendQuery,  {
     options: (props) => ({ variables: { code: props.code } })
     })(props => {
     const { error, recommendationsByUser } = props.data;
-    console.log("el props");
-    console.log(props);
+    // console.log("el props");
+    // console.log(props);
     if (error) {
       return <Text>{error}</Text>;
     }
@@ -180,6 +191,7 @@ export default class VideoPlayerView extends Component{
             comment: [],
             isOpen: false,
             isHidden: false,
+            user_id: 1
         }
 
         
@@ -203,14 +215,16 @@ export default class VideoPlayerView extends Component{
     _retrieveData = async () => {
         try {
           const value = await AsyncStorage.getItem('token');
-          console.log("despues de traerlo")
-          console.log(value)
+          const ide = await AsyncStorage.getItem('user_id');
+        //   console.log("despues de traerlo")
+        //   console.log(value)
           if (value !== '') {
             // We have data!!
             console.log('el token  ' + value);
-            user_id_r = 1
+            user_id_r = ide
+            this.setState({user_id: ide})
           }else{
-            user_id_r = 1
+            this.setState({user_id: 1})
           }
         } catch (error) {
           // Error retrieving data
@@ -243,7 +257,6 @@ export default class VideoPlayerView extends Component{
             return(
                 <View style={{flex:2}}>                            
                     <RecommendComponent elProps={elProps} code={1}/>
-                    {/* <RecommendComponent code={0}/> */}
                  </View>
             )
         }else{
@@ -278,48 +291,78 @@ export default class VideoPlayerView extends Component{
 
                         	<View style={styles.container}>
                                 <View style={{alignItems: 'stretch',height:300, backgroundColor:'black'}}>
-                                    <Video
-                                        // source={{uri: 'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'}}
-                                        source={{uri: urivideo}}
-                                        
-                                        useNativeControls={true}
-                                        rate={1.0}
-                                        volume={1.0}
-                                        isMuted={false}
-                                        resizeMode={Video.RESIZE_MODE_CONTAIN}
-                                        shouldPlay={true}
-                                        style={{width:width, height: 300}}
-                                        isPortrait={false}
-                                        positionMillis={0}
-                                        playbackInstancePosition={0}
-                                        playbackInstanceDuration={0}
-                                        // style={{backgroundColor: 'black'}}
-                                        // rotation={90}
+                                    <Mutation mutation={userMutation} variables={{id_user: this.state.user_id,
+                                                                                  id_category: params.item.category_id}}>
+                                        {(feedUserDBMutation) => 
+                                            <Video                   
+                                            source={{uri: urivideo}}
+                                            useNativeControls={true}
+                                            rate={1.0}
+                                            volume={1.0}
+                                            isMuted={false}
+                                            resizeMode={Video.RESIZE_MODE_CONTAIN}
+                                            shouldPlay={true}
+                                            style={{width:width, height: 300}}
+                                            isPortrait={false}
+                                            positionMillis={0}
+                                            playbackInstancePosition={0}
+                                            playbackInstanceDuration={0}
+                                            tittle={params.item.title}
 
-                                        tittle={params.item.title}
-                                        // onBack={() => null}
-                                    /> 
+                                            onLoad={() => {
+                                                console.log("Mutation user")
+                                                feedUserDBMutation({
+                                                variables: {
+                                                    id_user: this.state.user_id, 
+                                                    id_category: params.item.category_id
+                                                }
+                                                
+                                                })
+                                                .then(res => {
+                                                    Alert.alert(
+                                                    'Alert Title',
+                                                    'mutation user!!!',
+                                                    [
+                                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                                    ],
+                                                    {cancelable: false},
+                                                  );
+                                                  //aqui se guarda el token en el local storage
+                                                  console.log(res)
+                                                })
+                                                .catch(err => {
+                                                    Alert.alert(
+                                                    'Alert Title',
+                                                    'Hubo un error!!!',
+                                                    [
+                                                      {text: 'OK', onPress: () => console.log(err)},
+                                                    ],
+                                                    {cancelable: false},
+                                                  );
+                                                })
+                                            }}
+                                        /> }
+                            
+
+
+                                    </Mutation>
+                                    
+
                                 </View>
 
-                                <View style={{flex:2}}>
-                                    
-                                    
-                                    <RecommendComponent elProps={elProps} code={user_id_r}/>
-                                    {/* <RecommendComponent code={0}/> */}
-                                </View>
-                                    <View style={styles.inputcoment}>
+                                {this.cometar()}    
 
-                                <KeyboardAvoidingView  behavior="padding" enabled>
+                                <View style={styles.inputcoment}>
+                                    <KeyboardAvoidingView  behavior="padding" enabled>
                                         <Comentarios/>
-                                </KeyboardAvoidingView>
-                                    </View>
+                                    </KeyboardAvoidingView>
+                                </View>
                                 <View style={styles.switch}>
                                     <Text>Ver comentarios</Text>
                                     <Switch onValueChange={value => this.setState({ isHidden: value })}
                                             value={this.state.isHidden}/>  
-                                            
                                 </View>                                    
-                                {this.cometar()}                       
+                                                       
                             </View>
 				</SideMenu>
                 
