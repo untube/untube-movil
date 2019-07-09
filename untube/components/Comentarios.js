@@ -20,26 +20,25 @@ const client = new ApolloClient({
     cache: new InMemoryCache().restore({}),
   });
 
-
-const  addComment  =  gql `
-  mutación  addComment ($subject: String, $description :String!, $id_user: Int!, $id_video: String!) {
-        createCommentary(commentary: {
-          subject: $subject
-          description: $description
-          id_user: $id_user
-          id_video: $id_video
-        }) {
-          id
-          id_user
-          subject
-          description
-          id_video
-          likes
-          created_at
-          updated_at
-        }
+const commentariesMutation =gql `
+    mutation createCommentMutation($subject: String!, $description: String!){
+    createComment(comment:{
+        subject: $subject
+        description: $description
+        id_user: $id_user
+        id_video: $id_video
+      }) {
+        id
+        id_user
+        subject
+        description
+        id_video
+        likes
+        created_at
+        updated_at
+      }
   }
-` ;
+  `
 
 
 export default class Compentarios extends Component{
@@ -49,8 +48,6 @@ export default class Compentarios extends Component{
         this.state = {
             subject: '',
             description: '',
-            id_user: 0,
-            id_video: ''
         }
         
     }
@@ -80,26 +77,52 @@ export default class Compentarios extends Component{
 
                     </View>
 
-                    <Mutation mutation={addComment} variables={{ subject: this.state.subject,
-                                                                 description: this.state.description,
-                                                                 id_user: this.setState.id_user,
-                                                                 id_video: this.setState.id_video}}>
-                            {(addComment) => 
+                    <Mutation mutation={commentariesMutation} variables={{ subject: this.state.subject,
+                                                                           description: this.state.description,
+                                                                           id_user: this.setState.id_user,
+                                                                           id_video: this.setState.id_video}}>
+                            {(createCommentMutation) => 
                             <TouchableHighlight style ={styles.button} onPress={() => {
-                                addCommentMutation({
-                                    variables: {
-                                        subject: this.state.subject,
+                                console.log("Comentario")
+                                createCommentMutation({
+                                variables: {
+                                    subject: this.state.subject,
                                         description: this.state.description,
                                         id_user: this.setState.id_user,
-                                        id_video: this.setState.id_video
-                                    }
-                                  })
-                                    .then(res => res)
-                                    .catch(err => <Text>{err}</Text>);
-                                  this.setState({ description: ''});
-                                }}
-                                title="Add Comment"
-              >
+                                        id_video: this.setState.id_video,
+                                }
+                                
+                                })
+                                .then(res => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Gracias por comentar!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log('OK Pressed')},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                  console.log(res["data"]["createSession"]["token"]) 
+                                  this.saveKey('token',res["data"]["createSession"]["token"])
+                                  this.saveKey('user_id',res["data"]["createSession"]["id"].toString())
+                                })
+                                .catch(err => {
+                                    Alert.alert(
+                                    'Alert Title',
+                                    'Hubo un error!!!',
+                                    [
+                                      {text: 'OK', onPress: () => console.log(err)},
+                                    ],
+                                    {cancelable: false},
+                                  );
+                                  //aqui se guarda el token en el local storage
+                                  console.log(res)
+                                })
+                                this.setState({ subject: '', description: ''});
+                                //Aqui se hace el navigate a el home
+                            }}>
                                 <Text style={styles.textButton}>Enviar</Text>
                             </TouchableHighlight>}
 
