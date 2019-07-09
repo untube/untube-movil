@@ -60,6 +60,31 @@ export default class Menu extends Component {
                         </View>    
                     </TouchableWithoutFeedback>
 
+                    <TouchableWithoutFeedback onPress={
+                        () => navigation.navigate('Sesion') } onPressOut={() => this.props.toggle()}>
+                        <View style={styles.textWithIcon}>
+                            <View style={styles.withIcon}>
+                                
+                                <FontAwesome 
+                                style={styles.iconWithText}
+                                name='sesion'
+                                color='white'
+                                size={28}
+                                />
+                                
+                                <Text style = {styles.text}>Sesion</Text>
+                            </View>
+                            <FontAwesome
+                                    style={styles.rifhtIcon}
+                                    name='angle-right'
+                                    color='white'
+                                    size={25}
+                                />
+                            
+                        </View>    
+                    </TouchableWithoutFeedback>
+                    
+
 
                     <TouchableWithoutFeedback onPress={
                         () => navigation.navigate('Search')} onPressOut={() => this.props.toggle()}>
