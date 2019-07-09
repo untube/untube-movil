@@ -20,22 +20,21 @@ const client = new ApolloClient({
     cache: new InMemoryCache().restore({}),
   });
 
-const commentariesMutation =gql `
-    mutation createCommentMutation($subject: String!, $description: String!){
+const commentariesMutation =gql`
+    mutation createCommentMutation($subject: String!, $description: String!, $idUser: Int!, $idVideo: String!){
     createComment(comment:{
         subject: $subject
         description: $description
-        id_user: $id_user
-        id_video: $id_video
+        idUser: $idUser
+        idVideo: $idVideo
       }) {
         id
-        id_user
-        subject
+        idUser
+        idVideo
         description
-        id_video
         likes
-        created_at
-        updated_at
+        subject
+        likes
       }
   }
   `
@@ -46,18 +45,20 @@ export default class Compentarios extends Component{
     constructor(props){
         super(props)
         this.state = {
-            subject: '',
+            subject: 'Comentario',
             description: '',
+            id_user: 1,
+            id_video: 'id_ficti_1'
         }
         
     }
 
-    changeComment(comment){
-        this.setState({comment})
+    changeComment(description){
+        this.setState({description})
     }
     buttonPressed(){
-        if(this.state.comment){
-            Alert.alert(this.state.comment +'')
+        if(this.state.description){
+            Alert.alert(this.state.description +'')
         }else{
             Alert.alert('Error!')
         }
@@ -72,15 +73,15 @@ export default class Compentarios extends Component{
                         multiline = {true}
                         style = {[styles.input, styles.textArea]}
                         placeholder = "Comentar"
-                        value={this.state.comment}
-                        onChangeText={(comment) => this.changeComment(comment)}/>
+                        value={this.state.description}
+                        onChangeText={(description) => this.changeComment(description)}/>
 
                     </View>
 
                     <Mutation mutation={commentariesMutation} variables={{ subject: this.state.subject,
                                                                            description: this.state.description,
-                                                                           id_user: this.setState.id_user,
-                                                                           id_video: this.setState.id_video}}>
+                                                                           idUser: this.setState.id_user,
+                                                                           idVideo: this.setState.id_video}}>
                             {(createCommentMutation) => 
                             <TouchableHighlight style ={styles.button} onPress={() => {
                                 console.log("Comentario")
@@ -88,12 +89,13 @@ export default class Compentarios extends Component{
                                 variables: {
                                     subject: this.state.subject,
                                         description: this.state.description,
-                                        id_user: this.setState.id_user,
-                                        id_video: this.setState.id_video,
+                                        idUser: this.setState.id_user,
+                                        idVideo: this.setState.id_video,
                                 }
                                 
                                 })
                                 .then(res => {
+                                    console.log(res)
                                     Alert.alert(
                                     'Alert Title',
                                     'Gracias por comentar!!!',
@@ -102,11 +104,6 @@ export default class Compentarios extends Component{
                                     ],
                                     {cancelable: false},
                                   );
-                                  //aqui se guarda el token en el local storage
-                                  console.log(res)
-                                  console.log(res["data"]["createSession"]["token"]) 
-                                  this.saveKey('token',res["data"]["createSession"]["token"])
-                                  this.saveKey('user_id',res["data"]["createSession"]["id"].toString())
                                 })
                                 .catch(err => {
                                     Alert.alert(
@@ -117,10 +114,9 @@ export default class Compentarios extends Component{
                                     ],
                                     {cancelable: false},
                                   );
-                                  //aqui se guarda el token en el local storage
-                                  console.log(res)
+                                  
                                 })
-                                this.setState({ subject: '', description: ''});
+                                this.setState({ subject: '', description: '', id_user: 1, id_video: ''});
                                 //Aqui se hace el navigate a el home
                             }}>
                                 <Text style={styles.textButton}>Enviar</Text>
