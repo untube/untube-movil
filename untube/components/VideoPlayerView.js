@@ -112,37 +112,37 @@ const RecommendComponent = graphql(recommendQuery,  {
 const comentarios = [
     {
         key:'1',
-        comment: 'apesta',
+        comment: 'Gran video',
     },
 
     {
         key: '2',
-        comment: 'es lo mejor',
+        comment: 'Es lo mejor',
     },
 
     {
         key: '3',
-        comment: 'Jamas voy a curarme del cancer de ojos de esta mierdaaaaa',
+        comment: 'Jamas vere un video asi otra vez.',
     },
 
     {
         key: '4',
-        comment: 'pos guau',
+        comment: 'Sos grande pibe',
     },
 
     {
         key: '5',
-        comment: 'no es el mejor ni el peor, es todo lo contrario en el sentido opuesto y viceversa, esta mierda apesta como los caños de bogota, esos caños en los que botan hasta los mas infames pecados de la naturarela, si, esos caños, asi de asqueroso es este video',
+        comment: 'No hay mas videos como estos.',
     },
 
     {
         key: '6',
-        comment: 'es lo mejor X2',
+        comment: 'Muchos hacen este contenido.',
     },
 
     {
         key: '7',
-        comment: 'quiero llorar, pero el video me quemo los lagrimales :0',
+        comment: 'Quisiera llorar de la emocion al ver este video.',
     },
 ]
 
