@@ -7,9 +7,38 @@ import {
     Image,
     TouchableWithoutFeedback
 } from 'react-native'
-import { ScrollView } from 'react-native-gesture-handler';
+
+import gql from 'graphql-tag';
+import ApolloClient from 'apollo-client';
+import { HttpLink, InMemoryCache } from 'apollo-client-preset';
+import { ApolloProvider, graphql } from 'react-apollo';
+import { Mutation } from 'react-apollo'
 
 
+
+const client = new ApolloClient({
+    link: new HttpLink({ uri: 'http://35.196.3.185/graphql'}),
+    cache: new InMemoryCache().restore({}),
+  });
+
+const userMutation =gql`
+mutation feedUserDBMutation($id_user: String!, $id_category: String!){
+    feedUserDB(userPreferences:{
+        id_user: $id_user
+        id_category: $id_category
+      })
+    }
+`
+
+const videoMutation =gql`
+mutation feedVideoDBMutation($id_video: String!, $id_category: String!){
+    feedVideoDB(videosStatistics:{
+        id_video: $id_video
+        id_category: $id_category
+        calification: 1
+      })
+    }
+`
 
 
 export default class List extends Component {
@@ -30,18 +59,50 @@ export default class List extends Component {
         var uri64 = uribase.concat(item.image)
         return (
             // {width: 128, height: 180}
-            <TouchableWithoutFeedback onPress={
-                () => navigation.navigate('Reproduce', {item: item})}>
-                <View style={styles.containerImage}>
-                    <Image style={styles.image} source={{uri: uri64}}/>
-                    <View style={styles.containerText}>
-                        <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.title}</Text>
-                        <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
-                        <Text>Categoria: {item.category_id}</Text>
+            <ApolloProvider client={client}>
+                <Mutation mutation={[userMutation, videoMutation]} variables={{ id_user: 1,
+                                                                id_category: 1,
+                                                                id_video: "5d2261cfa9b574000683b378", 
+                                                                id_category: 1}}>
+                    <TouchableWithoutFeedback onPress={() => {
+                        console.log("iniciando el mutation 1")
+                        feedUserDBMutation({
+                        variables: {
+                            id_user: 1,
+                            id_category: 1
+                        }
                         
-                    </View>
-                </View>
-            </TouchableWithoutFeedback>
+                        })
+                        .then(() =>
+                        feedVideoDBMutation({
+                            variables:{
+                                id_video: "5d2261cfa9b574000683b378", 
+                                id_category: 1
+                            }
+                        })
+
+                        ).then(() => navigation.navigate('Reproduce', {item: item})
+                        )
+                        .catch(err => {
+                            
+                        })
+                        
+                        //Aqui se hace el navigate a el home
+                    }}>
+                        <View style={styles.containerImage}>
+                            <Image style={styles.image} source={{uri: uri64}}/>
+                            <View style={styles.containerText}>
+                                <Text style={{fontSize: 15, fontWeight: 'bold', fontFamily: 'Roboto',}}>{item.title}</Text>
+                                <Text numberOfLines={5} ellipsizeMode={'tail'} >{item.description}</Text>
+                                <Text>Categoria: {item.category_id}</Text>
+                                
+                            </View>
+                        </View>
+                    </TouchableWithoutFeedback>
+                </Mutation>
+            </ApolloProvider>
+            
+            
         )
     }
 

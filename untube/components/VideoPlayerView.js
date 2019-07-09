@@ -200,7 +200,9 @@ export default class VideoPlayerView extends Component{
     _retrieveData = async () => {
         try {
           const value = await AsyncStorage.getItem('token');
-          if (value !== null) {
+          console.log("despues de traerlo")
+          console.log(value)
+          if (value !== '') {
             // We have data!!
             console.log('el token  ' + value);
             user_id_r = 1
@@ -278,7 +280,7 @@ export default class VideoPlayerView extends Component{
                                 <View style={{flex:2}}>
                                     
                                     
-                                    <RecommendComponent elProps={elProps} code={1}/>
+                                    <RecommendComponent elProps={elProps} code={user_id_r}/>
                                     {/* <RecommendComponent code={0}/> */}
                                 </View>
 
