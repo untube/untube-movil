@@ -39,6 +39,16 @@ const commentariesMutation =gql`
   }
   `
 
+const CommentariesQuery = gql`
+    query commentariesByVideo($id_video: String!){
+        commentariesByVideo(id_video: $id_video){
+            subject 
+            description 
+            id_user
+        }
+    }
+`;
+
 
 export default class Compentarios extends Component{
 
@@ -57,19 +67,6 @@ export default class Compentarios extends Component{
         this.setState({ [key]: val })
       }
 
-    buttonPressed(){
-        if(this.state.subject){
-            Alert.alert(this.state.subject +'')
-        }else{
-            Alert.alert('Error!')
-        }
-
-        if(this.state.description){
-            Alert.alert(this.state.description +'')
-        }else{
-            Alert.alert('Error!')
-        }
-    }
     render(){
         return(
 
