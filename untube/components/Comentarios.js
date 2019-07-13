@@ -45,7 +45,7 @@ export default class Compentarios extends Component{
     constructor(props){
         super(props)
         this.state = {
-            subject: 'Comentario',
+            subject: '',
             description: '',
             id_user: 1,
             id_video: 'id_ficti_1'
@@ -53,10 +53,17 @@ export default class Compentarios extends Component{
         
     }
 
-    changeComment(description){
-        this.setState({description})
-    }
+    onChangeText = (key,  val) => {
+        this.setState({ [key]: val })
+      }
+
     buttonPressed(){
+        if(this.state.subject){
+            Alert.alert(this.state.subject +'')
+        }else{
+            Alert.alert('Error!')
+        }
+
         if(this.state.description){
             Alert.alert(this.state.description +'')
         }else{
@@ -70,11 +77,15 @@ export default class Compentarios extends Component{
                 <View style={styles.container}>
                     <View>
                         <TextInput 
+                        style = {styles.input}
+                        placeholder = "Subject"
+                        onChangeText={(text) => this.onChangeText('subject', text)}/>
+
+                        <TextInput 
                         multiline = {true}
                         style = {[styles.input, styles.textArea]}
                         placeholder = "Comentar"
-                        value={this.state.description}
-                        onChangeText={(description) => this.changeComment(description)}/>
+                        onChangeText={(text) => this.onChangeText('description', text)}/>
 
                     </View>
 
